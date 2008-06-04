@@ -331,7 +331,3 @@ C:\Documents and Settings\Rahul Vaidya\My Documents\Visual Studio 2005\Projects\
 C:\Documents and Settings\Rahul Vaidya\My Documents\Visual Studio 2005\Projects\NEATRacing\NEATRacing\RacingGame\obj\x86\Debug\RacingGame.obj.x86.Debug.Microsoft.Xna.Framework.RuntimeProfile.txt
 C:\Documents and Settings\Rahul Vaidya\My Documents\Visual Studio 2005\Projects\NEATRacing\NEATRacing\RacingGame\obj\x86\Debug\RacingGame.exe
 C:\Documents and Settings\Rahul Vaidya\My Documents\Visual Studio 2005\Projects\NEATRacing\NEATRacing\RacingGame\obj\x86\Debug\RacingGame.pdb
-C:\Documents and Settings\Rahul Vaidya\My Documents\Visual Studio 2005\Projects\NEATRacing\NEATRacing\RacingGame\obj\x86\Debug\SharpNeatLib.Experiments.Views.NEATRacingExperimentView.resources
-C:\Documents and Settings\Rahul Vaidya\My Documents\Visual Studio 2005\Projects\NEATRacing\NEATRacing\RacingGame\obj\x86\Debug\RacingGame.csproj.GenerateResource.Cache
-C:\Documents and Settings\Rahul Vaidya\My Documents\Visual Studio 2005\Projects\NEATRacing\NEATRacing\RacingGame\bin\x86\Debug\SharpNeatLib.dll
-C:\Documents and Settings\Rahul Vaidya\My Documents\Visual Studio 2005\Projects\NEATRacing\NEATRacing\RacingGame\bin\x86\Debug\SharpNeatLib.pdb
