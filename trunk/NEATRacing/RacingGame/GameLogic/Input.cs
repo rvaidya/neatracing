@@ -522,6 +522,19 @@ namespace RacingGame.GameLogic
         }
 
         /// <summary>
+        /// Keyboard F2 just pressed
+        /// </summary>
+        /// <returns>Bool</returns>
+        public static bool KeyboardF2JustPressed
+        {
+            get
+            {
+                return keyboardState.IsKeyDown(Keys.F2) &&
+                    keysPressedLastFrame.Contains(Keys.F2) == false;
+            }
+        }
+
+        /// <summary>
         /// Keyboard escape just pressed
         /// </summary>
         /// <returns>Bool</returns>

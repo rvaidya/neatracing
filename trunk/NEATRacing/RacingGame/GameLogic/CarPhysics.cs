@@ -186,6 +186,11 @@ namespace RacingGame.GameLogic
         #endregion
 
         /// <summary>
+        /// Boolean variable for toggling NEAT network on/off.
+        /// </summary>
+        bool neuralNet = false; 
+        
+        /// <summary>
         /// Car position, updated each frame by our current carSpeed vector.
         /// </summary>
         Vector3 carPos;
@@ -489,6 +494,20 @@ namespace RacingGame.GameLogic
         {
             base.Update();
 
+            // If F2 is pressed toggle NEAT network input, or disable it if 
+            // already toggled.
+            if (Input.KeyboardF2JustPressed == true)
+            {
+                if (neuralNet == false)
+                {
+                    neuralNet = true;
+                }
+                else
+                {
+                    neuralNet = false;
+                }
+            }
+
             // Don't use the car position and car handling if in free camera mode.
             if (RacingGameManager.Player.FreeCamera)
                 return;
@@ -515,35 +534,43 @@ namespace RacingGame.GameLogic
             rotationChange *= 0.95f;
 
             // Left/right changes rotation
-            if (Input.KeyboardLeftPressed ||
-                Input.Keyboard.IsKeyDown(Keys.A))
-                rotationChange += effectiveSensitivity *
-                    MaxRotationPerSec * moveFactor / 2.5f;
-            else if (Input.KeyboardRightPressed ||
-                Input.Keyboard.IsKeyDown(Keys.D) ||
-                Input.Keyboard.IsKeyDown(Keys.E))
-                rotationChange -= effectiveSensitivity *
-                    MaxRotationPerSec * moveFactor / 2.5f;
-            else
-                rotationChange = 0;
-
-            if (Input.MouseXMovement != 0)
-                rotationChange -= effectiveSensitivity *
-                    (Input.MouseXMovement / 15.0f) *
-                    MaxRotationPerSec * moveFactor;
-            if (Input.IsGamePadConnected)
+            if (neuralNet == false)
             {
-                // More dynamic force changing with gamepad (slow, faster, etc.)
-                rotationChange -= effectiveSensitivity *
-                    Input.GamePad.ThumbSticks.Left.X *
-                    MaxRotationPerSec * moveFactor / 1.12345f;
-                // Also allow pad to simulate same behaviour as on keyboard
-                if (Input.GamePad.DPad.Left == ButtonState.Pressed)
+                if (Input.KeyboardLeftPressed ||
+                    Input.Keyboard.IsKeyDown(Keys.A))
                     rotationChange += effectiveSensitivity *
-                        MaxRotationPerSec * moveFactor / 1.5f;
-                else if (Input.GamePad.DPad.Right == ButtonState.Pressed)
+                        MaxRotationPerSec * moveFactor / 2.5f;
+                else if (Input.KeyboardRightPressed ||
+                    Input.Keyboard.IsKeyDown(Keys.D) ||
+                    Input.Keyboard.IsKeyDown(Keys.E))
                     rotationChange -= effectiveSensitivity *
-                        MaxRotationPerSec * moveFactor / 1.5f;
+                        MaxRotationPerSec * moveFactor / 2.5f;
+                else
+                    rotationChange = 0;
+
+                if (Input.MouseXMovement != 0)
+                    rotationChange -= effectiveSensitivity *
+                        (Input.MouseXMovement / 15.0f) *
+                        MaxRotationPerSec * moveFactor;
+                if (Input.IsGamePadConnected)
+                {
+                    // More dynamic force changing with gamepad (slow, faster, etc.)
+                    rotationChange -= effectiveSensitivity *
+                        Input.GamePad.ThumbSticks.Left.X *
+                        MaxRotationPerSec * moveFactor / 1.12345f;
+                    // Also allow pad to simulate same behaviour as on keyboard
+                    if (Input.GamePad.DPad.Left == ButtonState.Pressed)
+                        rotationChange += effectiveSensitivity *
+                            MaxRotationPerSec * moveFactor / 1.5f;
+                    else if (Input.GamePad.DPad.Right == ButtonState.Pressed)
+                        rotationChange -= effectiveSensitivity *
+                            MaxRotationPerSec * moveFactor / 1.5f;
+                }
+            }
+            else
+            {
+                //NEAT network input is handled here.
+
             }
 
             float maxRot = MaxRotationPerSec * moveFactor * 1.25f;
@@ -619,32 +646,41 @@ namespace RacingGame.GameLogic
             // Up or left mouse button accelerates
             // Also support ASDW (querty) and AOEW (dvorak) shooter like controlling!
             float newAccelerationForce = 0.0f;
-            if (Input.KeyboardUpPressed ||
-                Input.Keyboard.IsKeyDown(Keys.W) ||
-                Input.MouseLeftButtonPressed ||
-                Input.GamePadAPressed)
-                newAccelerationForce +=
-                    maxAccelerationPerSec;// * moveFactor;
-            // Down or right mouse button decelerates
-            else if (Input.KeyboardDownPressed ||
-                Input.Keyboard.IsKeyDown(Keys.S) ||
-                Input.Keyboard.IsKeyDown(Keys.O) ||
-                Input.MouseRightButtonPressed)
-                newAccelerationForce -=
-                    maxAccelerationPerSec;// * moveFactor;
-            else if (Input.IsGamePadConnected)
-            {
-                // More dynamic force changing with gamepad (slow, faster, etc.)
-                newAccelerationForce +=
-                    (Input.GamePad.Triggers.Right) *
-                    maxAccelerationPerSec;// *moveFactor;
-                // Also allow pad to simulate same behaviour as on keyboard
-                if (Input.GamePad.DPad.Up == ButtonState.Pressed)
+            if (neuralNet == false)
+            {            
+                if (Input.KeyboardUpPressed ||
+                    Input.Keyboard.IsKeyDown(Keys.W) ||
+                    Input.MouseLeftButtonPressed ||
+                    Input.GamePadAPressed)
                     newAccelerationForce +=
-                        maxAccelerationPerSec;
-                else if (Input.GamePad.DPad.Down == ButtonState.Pressed)
+                        maxAccelerationPerSec;// * moveFactor;
+                // Down or right mouse button decelerates
+                else if (Input.KeyboardDownPressed ||
+                    Input.Keyboard.IsKeyDown(Keys.S) ||
+                    Input.Keyboard.IsKeyDown(Keys.O) ||
+                    Input.MouseRightButtonPressed)
                     newAccelerationForce -=
-                        maxAccelerationPerSec;
+                        maxAccelerationPerSec;// * moveFactor;
+                else if (Input.IsGamePadConnected)
+                {
+                    // More dynamic force changing with gamepad (slow, faster, etc.)
+                    newAccelerationForce +=
+                        (Input.GamePad.Triggers.Right) *
+                        maxAccelerationPerSec;// *moveFactor;
+                    // Also allow pad to simulate same behaviour as on keyboard
+                    if (Input.GamePad.DPad.Up == ButtonState.Pressed)
+                        newAccelerationForce +=
+                            maxAccelerationPerSec;
+                    else if (Input.GamePad.DPad.Down == ButtonState.Pressed)
+                        newAccelerationForce -=
+                            maxAccelerationPerSec;
+                }
+            }
+            else
+            {
+                // NEAT network decides if it still is accelerating, doing nothing, 
+                // or deccelerating
+
             }
 
             // Limit acceleration (but drive as fast forwards as possible if we
