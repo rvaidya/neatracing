@@ -7,6 +7,8 @@ namespace SharpNeatLib.Experiments
     {
         #region INetworkEvaluator
 
+        public int stepCount = 3;
+
         public double EvaluateNetwork(INetwork network)
         {
             double fitness = 0.0;
@@ -21,14 +23,14 @@ namespace SharpNeatLib.Experiments
                 // Using this approach instead makes the code easier to scale up to the 11 and 20 
                 // multiplexer problems.
                 int tmp = i;
-                for (int j = 0; j < 6; j++)
+                for (int j = 0; j < network.InputNeuronCount; j++)
                 {
                     network.SetInputSignal(j, ((tmp & 0x1) * 0.9) + 0.1);
                     tmp >>= 1;
                 }
 
                 // Activate the network.
-                network.MultipleSteps(3);
+                network.MultipleSteps(stepCount);
 
                 // Get network's answer.
                 double output = network.GetOutputSignal(0);
