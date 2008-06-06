@@ -1,0 +1,12 @@
+bin\Debug\RudyGraph.dll
+bin\Debug\RudyGraph.pdb
+obj\Debug\ResolveAssemblyReference.cache
+obj\Debug\RudyGraph.RudyGraphControl.resources
+obj\Debug\RudyGraph.csproj.GenerateResource.Cache
+obj\Debug\RudyGraph.dll
+obj\Debug\RudyGraph.pdb
+bin\Release\RudyGraph.dll
+obj\Release\ResolveAssemblyReference.cache
+obj\Release\RudyGraph.RudyGraphControl.resources
+obj\Release\RudyGraph.csproj.GenerateResource.Cache
+obj\Release\RudyGraph.dll

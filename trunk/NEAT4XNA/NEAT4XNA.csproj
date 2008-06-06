@@ -36,18 +36,9 @@
   </ItemGroup>
   <ItemGroup>
     <Compile Include="Class1.cs" />
-    <Compile Include="NEAT\NXExperiment.cs" />
-    <Compile Include="NEAT\NXExperimentView.cs">
-      <SubType>Form</SubType>
-    </Compile>
+    <Compile Include="NEAT\NXNetwork.cs" />
     <Compile Include="NEAT\NXNetworkEvaluator.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
-  </ItemGroup>
-  <ItemGroup>
-    <EmbeddedResource Include="NEAT\NXExperimentView.resx">
-      <DependentUpon>NXExperimentView.cs</DependentUpon>
-      <SubType>Designer</SubType>
-    </EmbeddedResource>
   </ItemGroup>
   <ItemGroup>
     <ProjectReference Include="..\NEATRacing\SharpNeatLib\SharpNeatLib.csproj">
