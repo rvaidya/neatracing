@@ -9,7 +9,7 @@ namespace NEAT4XNA.NEAT
     class NXNetwork
     {
         int stepCount, inputCount, outputCount;
-        delegate double FitnessFunction(double[] d);
+        public delegate double FitnessFunction(double[] d);
         public FitnessFunction fitnessFunction;
         INetwork network;
 
