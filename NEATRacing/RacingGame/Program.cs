@@ -9,12 +9,14 @@
 
 #region Using directives
 using System;
+using System.Threading;
 using RacingGame.Helpers;
 using RacingGame.Properties;
 using Microsoft.Xna.Framework;
 #if !XBOX360
 using System.Windows.Forms;
 using Microsoft.Xna.Framework.Graphics;
+using SharpNeat;
 #endif
 #endregion
 
@@ -35,7 +37,13 @@ namespace RacingGame
 #endif
         static void Main()
         {
+            Thread t = new Thread(NEATThread);
+            t.Start();
             StartGame();
+        }
+        static void NEATThread()
+        {
+            Application.Run(new Form1());
         }
         #endregion
 
