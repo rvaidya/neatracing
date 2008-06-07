@@ -569,7 +569,7 @@ namespace RacingGame.GameLogic
             }
             else
             {
-                //NEAT network input is handled here.
+                //NEAT network decides to turn left or right.
 
             }
 
@@ -1061,6 +1061,9 @@ namespace RacingGame.GameLogic
                             0.1f * speedDistanceToGuardrails * moveFactor);
                         carPos += correctCarPosValue * guardrailLeftNormal;
                     }
+
+                    //Alert NEAT of collision
+
                 }
 
                 if (rightDist < 0.1f ||
