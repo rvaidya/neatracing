@@ -1,5 +1,0 @@
-C:\Documents and Settings\Rahul Vaidya\My Documents\Visual Studio 2005\Projects\NEATRacing\NEATRacing\RacingGameContentProcessors\bin\x86\Debug\RacingGameContentProcessors.dll
-C:\Documents and Settings\Rahul Vaidya\My Documents\Visual Studio 2005\Projects\NEATRacing\NEATRacing\RacingGameContentProcessors\bin\x86\Debug\RacingGameContentProcessors.pdb
-C:\Documents and Settings\Rahul Vaidya\My Documents\Visual Studio 2005\Projects\NEATRacing\NEATRacing\RacingGameContentProcessors\obj\x86\Debug\ResolveAssemblyReference.cache
-C:\Documents and Settings\Rahul Vaidya\My Documents\Visual Studio 2005\Projects\NEATRacing\NEATRacing\RacingGameContentProcessors\obj\x86\Debug\RacingGameContentProcessors.dll
-C:\Documents and Settings\Rahul Vaidya\My Documents\Visual Studio 2005\Projects\NEATRacing\NEATRacing\RacingGameContentProcessors\obj\x86\Debug\RacingGameContentProcessors.pdb

@@ -1,9 +1,0 @@
-C:\Documents and Settings\Rahul Vaidya\My Documents\Visual Studio 2005\Projects\NEATRacing\NEATRacing\SharpNeatLib\bin\Debug\SharpNeatLib.dll
-C:\Documents and Settings\Rahul Vaidya\My Documents\Visual Studio 2005\Projects\NEATRacing\NEATRacing\SharpNeatLib\bin\Debug\SharpNeatLib.pdb
-C:\Documents and Settings\Rahul Vaidya\My Documents\Visual Studio 2005\Projects\NEATRacing\NEATRacing\SharpNeatLib\obj\Debug\ResolveAssemblyReference.cache
-C:\Documents and Settings\Rahul Vaidya\My Documents\Visual Studio 2005\Projects\NEATRacing\NEATRacing\SharpNeatLib\obj\Debug\SharpNeatLib.Experiments.AbstractExperimentView.resources
-C:\Documents and Settings\Rahul Vaidya\My Documents\Visual Studio 2005\Projects\NEATRacing\NEATRacing\SharpNeatLib\obj\Debug\SharpNeatLib.NetworkVisualization.NetworkControl.resources
-C:\Documents and Settings\Rahul Vaidya\My Documents\Visual Studio 2005\Projects\NEATRacing\NEATRacing\SharpNeatLib\obj\Debug\SharpNeatLib.NetworkVisualization.Viewport.resources
-C:\Documents and Settings\Rahul Vaidya\My Documents\Visual Studio 2005\Projects\NEATRacing\NEATRacing\SharpNeatLib\obj\Debug\SharpNeatLib.csproj.GenerateResource.Cache
-C:\Documents and Settings\Rahul Vaidya\My Documents\Visual Studio 2005\Projects\NEATRacing\NEATRacing\SharpNeatLib\obj\Debug\SharpNeatLib.dll
-C:\Documents and Settings\Rahul Vaidya\My Documents\Visual Studio 2005\Projects\NEATRacing\NEATRacing\SharpNeatLib\obj\Debug\SharpNeatLib.pdb
