@@ -89,10 +89,6 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <ProjectReference Include="..\..\..\..\..\NEATRacing\RacingGame\RacingGame.csproj">
-      <Project>{7C034683-3023-4208-A016-91BB8650B817}</Project>
-      <Name>RacingGame</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\..\RudyGraph\RudyGraph.csproj">
       <Name>RudyGraph</Name>
       <Project>{7B0AB121-5140-4BE4-8200-9E661EEC52E3}</Project>
