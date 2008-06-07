@@ -14,6 +14,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters;
+using System.Runtime.Serialization.Formatters.Binary;
 using RacingGame.Graphics;
 using RacingGame.Helpers;
 using RacingGame.Shaders;
@@ -1013,6 +1016,18 @@ namespace RacingGame.Landscapes
                 track = new Track("Track" + level.ToString(), this);
             else
                 track.Reload("Track" + level.ToString(), this);
+            
+            // Output track spline data
+            FileStream flStream = new FileStream("Track.dat", FileMode.OpenOrCreate, FileAccess.Write);
+            try
+            {
+                BinaryFormatter binFormatter = new BinaryFormatter();
+                binFormatter.Serialize(flStream, track.trackPoints);
+            }
+            finally
+            {
+                flStream.Close();
+            }
 
             // Load replay for this track to show best player
             bestReplay = new Replay((int)level, false, track);

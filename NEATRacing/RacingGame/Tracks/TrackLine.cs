@@ -14,6 +14,8 @@ using Microsoft.Xna.Framework.Input;
 using System;
 using System.Collections.Generic;
 using System.Text;
+using System.Runtime.Serialization;
+using System.Runtime.Serialization.Formatters;
 using RacingGame.Graphics;
 using RacingGame.Helpers;
 using RacingGame.Landscapes;
@@ -24,6 +26,9 @@ namespace RacingGame.Tracks
     /// <summary>
     /// Track line
     /// </summary>
+    
+    /// Make track data serializable
+    [Serializable]
     public class TrackLine
     {
         #region Constants
@@ -130,6 +135,20 @@ namespace RacingGame.Tracks
         /// </summary>
         protected List<RoadHelperPosition> helperPositions =
             new List<RoadHelperPosition>();
+        #endregion
+
+        #region Properties
+        /// <summary>
+        /// trackPoints
+        /// </summary>
+        /// <returns>List</returns>
+        public List<TrackVertex> trackPoints
+        {
+            get
+            {
+                return points;
+            }
+        }
         #endregion
 
         #region Constructors
