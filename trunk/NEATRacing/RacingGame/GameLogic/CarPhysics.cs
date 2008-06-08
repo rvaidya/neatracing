@@ -207,6 +207,7 @@ namespace RacingGame.GameLogic
         /// to drive!
         /// </summary>
         public float speed;
+        public float speedDisplay;
 
         /// <summary>
         /// Car up vector for orientation.
@@ -315,7 +316,7 @@ namespace RacingGame.GameLogic
         {
             get
             {
-                return speed;
+                return speedDisplay;
             }
         }
 
@@ -421,6 +422,7 @@ namespace RacingGame.GameLogic
         public CarPhysics(Vector3 setCarPosition)
         {
             RacingGamePointers.physics = this;
+            RacingGamePointers.currentControlPoint = 0;
             SetCarPosition(setCarPosition,
                 new Vector3(0, 1, 0), new Vector3(0, 0, 1));
         }
@@ -911,6 +913,10 @@ namespace RacingGame.GameLogic
             // Finally check for collisions with the guard rails.
             // Also handle gravity.
             ApplyGravityAndCheckForCollisions();
+            speedDisplay = speed;
+            TrackVertex vertex = RacingGamePointers.getClosestTrackPoint();
+            float dot = Vector3.Dot(carDir, vertex.dir);
+            speedDisplay = RacingGamePointers.currentControlPoint;
             #endregion
         }
         #endregion

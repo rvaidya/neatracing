@@ -371,6 +371,10 @@ namespace RacingGame.Tracks
 
             #region Generate all points with help of catmull rom splines
             // Generate all points with help of catmull rom splines
+
+            //NEAT code
+            RacingGamePointers.splinePoints = inputPoints;
+
             for (int num = 0; num < inputPoints.Length; num++)
             {
                 // Get the 4 required points for the catmull rom spline
