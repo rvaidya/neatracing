@@ -886,6 +886,7 @@ namespace RacingGame.GameLogic
                 RacingGameManager.Landscape.GetTrackPositionMatrix(
                 trackSegmentNumber, trackSegmentPercent,
                 out roadWidth, out nextRoadWidth);
+            
 
             // Just set car up from trackMatrix, this should be done
             // better with a more accurate gravity model (see gravity calculation!)
@@ -913,10 +914,10 @@ namespace RacingGame.GameLogic
             // Finally check for collisions with the guard rails.
             // Also handle gravity.
             ApplyGravityAndCheckForCollisions();
-            speedDisplay = speed;
-            TrackVertex vertex = RacingGamePointers.getClosestTrackPoint();
-            //float dot = Vector3.Dot(carDir, vertex.dir);
-            speedDisplay = RacingGamePointers.currentControlPoint;
+            Vector3 trackDirection = trackMatrix.Forward;
+            float dot = Vector3.Dot(carDir, trackDirection);
+            if (dot < 0) speedDisplay = -1 * speed;
+            else speedDisplay = speed;
             #endregion
         }
         #endregion
