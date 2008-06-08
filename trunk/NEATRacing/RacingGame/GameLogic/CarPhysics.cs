@@ -23,6 +23,9 @@ using RacingGame.Sounds;
 using Model = RacingGame.Graphics.Model;
 using RacingGame.Tracks;
 using RacingGame.Properties;
+using SharpNeatLib;
+using SharpNeatLib.Evolution;
+using SharpNeatLib.NeuralNetwork;
 #endregion
 
 namespace RacingGame.GameLogic
@@ -497,19 +500,23 @@ namespace RacingGame.GameLogic
         {
             base.Update();
 
-            // If F2 is pressed toggle NEAT network input, or disable it if 
-            // already toggled.
+            // If F2 is pressed toggle NEAT network input and create the 
+            // network, or disable it if already toggled.
             if (Input.KeyboardF2JustPressed == true)
             {
                 if (neuralNet == false)
                 {
-                    neuralNet = true;
-
+                    neuralNet = true;                
                 }
                 else
                 {
                     neuralNet = false;
                 }
+            }
+
+            if (neuralNet == true)
+            {
+                NEATPointers.bestGenome.Decode(NEATPointers.activationFunction).SetInputSignals();
             }
 
             // Don't use the car position and car handling if in free camera mode.
@@ -574,7 +581,7 @@ namespace RacingGame.GameLogic
             else
             {
                 //NEAT network decides to turn left or right.
-                
+                rotationChange = NEATPointers.bestGenome.Decode(NEATPointers.activationFunction).GetOutputSignal(0);            
             }
 
             float maxRot = MaxRotationPerSec * moveFactor * 1.25f;
@@ -682,9 +689,18 @@ namespace RacingGame.GameLogic
             }
             else
             {
-                // NEAT network decides if it still is accelerating, doing nothing, 
-                // or deccelerating
-
+                // NEAT network decides if it still is accelerating 
+                // or deccelerating, skip over this if it does nothing
+                if (NEATPointers.bestGenome.AbstractNetwork.GetOutputSignal(1).)
+                {
+                    newAccelerationForce +=
+                        maxAccelerationPerSec;
+                }
+                else if (NEATPointers.bestGenome.AbstractNetwork.GetOutputSignal(1).)
+                {
+                    newAccelerationForce -=
+                        maxAccelerationPerSec;
+                }
             }
 
             // Limit acceleration (but drive as fast forwards as possible if we
@@ -750,10 +766,20 @@ namespace RacingGame.GameLogic
 
             if (isCarOnGround)
             {
-                bool downPressed =
-                    Input.MouseRightButtonPressed ||
-                    Input.KeyboardDownPressed ||
-                    Input.GamePad.DPad.Down == ButtonState.Pressed;
+                bool downPressed = false;
+                if (neuralNet == false)
+                {
+                    downPressed =
+                        Input.MouseRightButtonPressed ||
+                        Input.KeyboardDownPressed ||
+                        Input.GamePad.DPad.Down == ButtonState.Pressed;
+                }
+                else
+                {
+                    // NEAT returns if it wants to deccelerate
+                    if (NEATPointers.bestGenome.Decode(NEATPointers.activationFunction).GetOutputSignal(1).CompareTo('3'))
+                        downPressed = true;
+                }
 
                 if (Input.Keyboard.IsKeyDown(Keys.Space) ||
                     Input.MouseMiddleButtonPressed ||

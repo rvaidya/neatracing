@@ -26,6 +26,7 @@ using Model = RacingGame.Graphics.Model;
 using Texture = RacingGame.Graphics.Texture;
 using RacingGame.Properties;
 using RacingGame.Shaders;
+using SharpNeatLib;
 #endregion
 
 namespace RacingGame
