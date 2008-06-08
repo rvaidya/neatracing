@@ -193,12 +193,12 @@ namespace RacingGame.GameLogic
         /// <summary>
         /// Car position, updated each frame by our current carSpeed vector.
         /// </summary>
-        Vector3 carPos;
+        public Vector3 carPos;
 
         /// <summary>
         /// Direction the car is currently heading.
         /// </summary>
-        Vector3 carDir;
+        public Vector3 carDir;
 
         /// <summary>
         /// Speed of our car, just in the direction of our car.
@@ -206,12 +206,12 @@ namespace RacingGame.GameLogic
         /// for this game sliding would be really bad and make it much harder
         /// to drive!
         /// </summary>
-        float speed;
+        public float speed;
 
         /// <summary>
         /// Car up vector for orientation.
         /// </summary>
-        Vector3 carUp;
+        public Vector3 carUp;
 
         /// <summary>
         /// Car up vector
@@ -420,6 +420,7 @@ namespace RacingGame.GameLogic
         /// <param name="setCarPosition">Set car position</param>
         public CarPhysics(Vector3 setCarPosition)
         {
+            RacingGamePointers.physics = this;
             SetCarPosition(setCarPosition,
                 new Vector3(0, 1, 0), new Vector3(0, 0, 1));
         }
