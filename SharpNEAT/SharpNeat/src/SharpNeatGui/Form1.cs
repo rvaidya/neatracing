@@ -2245,7 +2245,7 @@ Do you wish to overwrite the file?";
 					idGenerator);
 
 				pop = new Population(idGenerator, genomeList);
-                NEATPointers.seedGenome = seedGenome;
+                NEATPointers.bestGenome = seedGenome;
 			}
 		}
 
