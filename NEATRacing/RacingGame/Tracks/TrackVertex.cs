@@ -24,6 +24,7 @@ namespace RacingGame.Tracks
     /// we got all the data we need plus some more in here.
     /// For example just use LeftTangentVertex, etc. to get TangentVertices!
     /// </summary>
+    [Serializable()]
     public class TrackVertex
     {
         #region Variables
@@ -34,16 +35,19 @@ namespace RacingGame.Tracks
         /// <summary>
         /// Right, up and dir vectors 
         /// </summary>
+        [NonSerialized]
         public Vector3 right, up, dir;
         /// <summary>
         /// Texture coordinates, u goes along with the road, v is left and right,
         /// which is on the texture top and bottom.
         /// </summary>
+       [NonSerialized]
         public Vector2 uv;
 
         /// <summary>
         /// Minimun, maximum and default road width for our track.
         /// </summary>
+        [NonSerialized]
         public const float MinRoadWidth = 0.25f,
             DefaultRoadWidth = 1.0f,
             MaxRoadWidth = 2.0f,
@@ -52,16 +56,19 @@ namespace RacingGame.Tracks
         /// <summary>
         /// Thickness (up/down) of the road for the 3d side.
         /// </summary>
+        [NonSerialized]
         const float RoadThickness = 1.0f;
 
         /// <summary>
         /// Road tunnel height.
         /// </summary>
+        [NonSerialized]
         const float RoadTunnelHeight = 7.125f;
 
         /// <summary>
         /// Road width
         /// </summary>
+        [NonSerialized]
         public float roadWidth = DefaultRoadWidth;
         #endregion
 
