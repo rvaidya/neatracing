@@ -99,7 +99,7 @@
     </Compile>
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\..\..\..\NEATRacing\SharpNeatLib\SharpNeatLib.csproj">
+    <ProjectReference Include="..\..\SharpNeatLib\SharpNeatLib.csproj">
       <Project>{3A64602B-C5E0-4CB7-99B0-1FC6ABB4449A}</Project>
       <Name>SharpNeatLib</Name>
     </ProjectReference>

@@ -146,7 +146,7 @@
       <Project>{52441FF4-57D8-4FD9-B0C5-5CC6ADDB021B}</Project>
       <Name>SharpNeatGui</Name>
     </ProjectReference>
-    <ProjectReference Include="..\SharpNeatLib\SharpNeatLib.csproj">
+    <ProjectReference Include="..\..\SharpNEAT\SharpNeat\src\SharpNeatLib\SharpNeatLib.csproj">
       <Project>{3A64602B-C5E0-4CB7-99B0-1FC6ABB4449A}</Project>
       <Name>SharpNeatLib</Name>
     </ProjectReference>

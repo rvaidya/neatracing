@@ -28,7 +28,7 @@
     </UpgradeBackupLocation>
   </PropertyGroup>
   <PropertyGroup Condition=" '$(Configuration)|$(Platform)' == 'Debug|AnyCPU' ">
-    <OutputPath>bin\Debug\</OutputPath>
+    <OutputPath>..\..\..\..\Build\Debug\</OutputPath>
     <AllowUnsafeBlocks>false</AllowUnsafeBlocks>
     <BaseAddress>285212672</BaseAddress>
     <CheckForOverflowUnderflow>false</CheckForOverflowUnderflow>
@@ -265,6 +265,7 @@
     <Compile Include="NeatGenome\Xml\XmlNeatGenomeReaderStatic.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="NEATPointers.cs" />
     <Compile Include="NetworkVisualization\ColorUtilities.cs">
       <SubType>Code</SubType>
     </Compile>
