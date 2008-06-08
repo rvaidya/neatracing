@@ -92,6 +92,10 @@
       <SpecificVersion>False</SpecificVersion>
       <HintPath>..\..\bin\thirdparty\ZedGraph.dll</HintPath>
     </Reference>
+    <ProjectReference Include="..\..\..\..\NEATRacing\SharpNeatLib\SharpNeatLib.csproj">
+      <Project>{3A64602B-C5E0-4CB7-99B0-1FC6ABB4449A}</Project>
+      <Name>SharpNeatLib</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\..\RudyGraph\RudyGraph.csproj">
       <Project>{7B0AB121-5140-4BE4-8200-9E661EEC52E3}</Project>
       <Name>RudyGraph</Name>
@@ -104,11 +108,6 @@
     <ProjectReference Include="..\Experiments\SharpNeatExperiments\SharpNeatExperiments.csproj">
       <Name>SharpNeatExperiments</Name>
       <Project>{D9828EED-D730-40BF-9A1C-7C3D947E7689}</Project>
-      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
-    </ProjectReference>
-    <ProjectReference Include="..\SharpNeatLib\SharpNeatLib.csproj">
-      <Name>SharpNeatLib</Name>
-      <Project>{3A64602B-C5E0-4CB7-99B0-1FC6ABB4449A}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
     </ProjectReference>
   </ItemGroup>

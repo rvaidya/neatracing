@@ -841,6 +841,7 @@ namespace SharpNeatLib.Evolution
 				if(genome.Fitness > bestFitness)
 				{
 					bestGenome = genome;
+                    NEATPointers.bestGenome = genome;
 					bestFitness = bestGenome.Fitness;
 				}
 

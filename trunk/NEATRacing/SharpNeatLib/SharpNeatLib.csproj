@@ -265,6 +265,7 @@
     <Compile Include="NeatGenome\Xml\XmlNeatGenomeReaderStatic.cs">
       <SubType>Code</SubType>
     </Compile>
+    <Compile Include="NEATPointers.cs" />
     <Compile Include="NetworkVisualization\ColorUtilities.cs">
       <SubType>Code</SubType>
     </Compile>

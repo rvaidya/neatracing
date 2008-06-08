@@ -98,6 +98,7 @@
     <Compile Include="Helpers\RandomHelper.cs" />
     <Compile Include="Helpers\Vector3Helper.cs" />
     <Compile Include="Landscapes\Landscape.cs" />
+    <Compile Include="NEATRacingGamePointers.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
     <Compile Include="RacingGameManager.cs" />
@@ -137,9 +138,17 @@
     <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
+    <ProjectReference Include="..\..\SharpNEAT\SharpNeat\src\Experiments\SharpNeatExperiments\SharpNeatExperiments.csproj">
+      <Project>{D9828EED-D730-40BF-9A1C-7C3D947E7689}</Project>
+      <Name>SharpNeatExperiments</Name>
+    </ProjectReference>
     <ProjectReference Include="..\..\SharpNEAT\SharpNeat\src\SharpNeatGui\SharpNeatGui.csproj">
       <Project>{52441FF4-57D8-4FD9-B0C5-5CC6ADDB021B}</Project>
       <Name>SharpNeatGui</Name>
+    </ProjectReference>
+    <ProjectReference Include="..\SharpNeatLib\SharpNeatLib.csproj">
+      <Project>{3A64602B-C5E0-4CB7-99B0-1FC6ABB4449A}</Project>
+      <Name>SharpNeatLib</Name>
     </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />

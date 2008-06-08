@@ -86,11 +86,6 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <ProjectReference Include="..\..\SharpNeatLib\SharpNeatLib.csproj">
-      <Name>SharpNeatLib</Name>
-      <Project>{3A64602B-C5E0-4CB7-99B0-1FC6ABB4449A}</Project>
-      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
-    </ProjectReference>
   </ItemGroup>
   <ItemGroup>
     <Compile Include="AssemblyInfo.cs">
@@ -102,6 +97,12 @@
     <Compile Include="MaxNetworkEvaluator.cs">
       <SubType>Code</SubType>
     </Compile>
+  </ItemGroup>
+  <ItemGroup>
+    <ProjectReference Include="..\..\..\..\..\NEATRacing\SharpNeatLib\SharpNeatLib.csproj">
+      <Project>{3A64602B-C5E0-4CB7-99B0-1FC6ABB4449A}</Project>
+      <Name>SharpNeatLib</Name>
+    </ProjectReference>
   </ItemGroup>
   <Import Project="$(MSBuildBinPath)\Microsoft.CSharp.targets" />
   <PropertyGroup>

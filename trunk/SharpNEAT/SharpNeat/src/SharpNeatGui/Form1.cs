@@ -2219,7 +2219,7 @@ Do you wish to overwrite the file?";
 			{
 				XmlDocument doc = new XmlDocument();
 				doc.Load(filename);
-				seedGenome = XmlNeatGenomeReaderStatic.Read(doc);	
+				seedGenome = XmlNeatGenomeReaderStatic.Read(doc);
 			}
 			catch(Exception e)
 			{
@@ -2245,6 +2245,7 @@ Do you wish to overwrite the file?";
 					idGenerator);
 
 				pop = new Population(idGenerator, genomeList);
+                NEATPointers.seedGenome = seedGenome;
 			}
 		}
 
