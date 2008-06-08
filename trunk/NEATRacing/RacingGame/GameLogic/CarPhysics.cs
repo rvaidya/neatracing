@@ -502,6 +502,7 @@ namespace RacingGame.GameLogic
                 if (neuralNet == false)
                 {
                     neuralNet = true;
+
                 }
                 else
                 {
@@ -571,7 +572,7 @@ namespace RacingGame.GameLogic
             else
             {
                 //NEAT network decides to turn left or right.
-
+                
             }
 
             float maxRot = MaxRotationPerSec * moveFactor * 1.25f;

@@ -12,10 +12,11 @@ using Microsoft.Xna.Framework;
 using Microsoft.Xna.Framework.Graphics;
 using Microsoft.Xna.Framework.Input;
 using System;
+using System.IO;
 using System.Collections.Generic;
 using System.Text;
 using System.Runtime.Serialization;
-using System.Runtime.Serialization.Formatters;
+using System.Runtime.Serialization.Formatters.Binary;
 using RacingGame.Graphics;
 using RacingGame.Helpers;
 using RacingGame.Landscapes;
@@ -28,7 +29,7 @@ namespace RacingGame.Tracks
     /// </summary>
     
     /// Make track data serializable
-    [Serializable]
+    [Serializable()]
     public class TrackLine
     {
         #region Constants

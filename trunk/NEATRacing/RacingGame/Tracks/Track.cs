@@ -30,6 +30,7 @@ namespace RacingGame.Tracks
     /// class, which is loaded by a couple of spline points we get exported
     /// from 3ds max.
     /// </summary>
+    [Serializable()]
     public class Track : TrackLine, IDisposable
     {
         #region Constants
@@ -38,6 +39,7 @@ namespace RacingGame.Tracks
         /// values will strech the texture more. 1.0f means we use the same as
         /// the road, which is defined in    TrackVertex.RoadWidthScale.
         /// </summary>
+        [NonSerialized]
         const float RoadBackHullTextureWidthFactor = 1.0f;
 
         /// <summary>
@@ -45,6 +47,7 @@ namespace RacingGame.Tracks
         /// values will strech the texture more. 1.0f means we use the same as
         /// the road, which is defined in    TrackVertex.RoadWidthScale.
         /// </summary>
+        [NonSerialized]
         const float RoadTunnelTextureWidthFactor = 0.25f;
 
         /// <summary>
@@ -53,27 +56,32 @@ namespace RacingGame.Tracks
         /// are also at the top and bottom of the texture, use this factor
         /// to find out how much it is in the texture.
         /// </summary>
+        [NonSerialized]
         const float RoadBackSideTextureHeight = 0.135f;
 
         /// <summary>
         /// Same as RoadBackSideTextureHeight, but we have more space for
         /// the sides in the tunnel texture!
         /// </summary>
+        [NonSerialized]
         const float RoadTunnelSideTextureHeight = 0.235f;
 
         /// <summary>
         /// Palm and latern gap for the autogeneration.
         /// </summary>
+        [NonSerialized]
         const float PalmAndLaternGap = 20.0f;
 
         /// <summary>
         /// Put a checkpoint every 500m
         /// </summary>
+        [NonSerialized]
         const float CheckpointGap = 500.0f;
 
         /// <summary>
         /// Gap for signs, don't put them closer than this together.
         /// </summary>
+        [NonSerialized]
         const float SignGap = 24;
         #endregion
 
@@ -81,17 +89,20 @@ namespace RacingGame.Tracks
         /// <summary>
         /// Road material for the top of the road.
         /// </summary>
+        [NonSerialized]
         Material roadMaterial = new Material(
             "Road", "RoadNormal");
         /// <summary>
         /// Road back material, for the other side of the road and the sides.
         /// </summary>
+        [NonSerialized]
         Material roadBackMaterial = new Material(
             "RoadBack", "RoadBackNormal");
 
         /// <summary>
         /// Road tunnel material, used whereever we got tunnels.
         /// </summary>
+        [NonSerialized]
         Material roadTunnelMaterial = new Material(
             // Use mainly ambient color (tunnel uses lightmaps)
             new Color(182, 182, 182),
@@ -102,6 +113,7 @@ namespace RacingGame.Tracks
         /// <summary>
         /// Road cement material, used for the columns the road is staying on.
         /// </summary>
+        [NonSerialized]
         Material roadCementMaterial = new Material(
             "RoadCement", "RoadCementNormal");
 
@@ -109,6 +121,7 @@ namespace RacingGame.Tracks
         /// Guard rail material, used for the left and right guard rails.
         /// It is also used for the guard rail 
         /// </summary>
+        [NonSerialized]
         Material guardRailMaterial = new Material(
             new Color(72, 72, 72),
             new Color(182, 182, 182),
@@ -118,45 +131,55 @@ namespace RacingGame.Tracks
         /// <summary>
         /// Vertices for the road itself.
         /// </summary>
+        [NonSerialized]
         TangentVertex[] roadVertices = null;
         /// <summary>
         /// Vertex buffer for the road.
         /// </summary>
+        [NonSerialized]
         VertexBuffer roadVb = null;
         /// <summary>
         /// Index buffer for the road.
         /// </summary>
+        [NonSerialized]
         IndexBuffer roadIb = null;
 
         /// <summary>
         /// Vertices for the road back (hull, bottom side, sides).
         /// </summary>
+        [NonSerialized]
         TangentVertex[] roadBackVertices = null;
         /// <summary>
         /// Vertex buffer for the road back (has different texture coordinates)
         /// </summary>
+        [NonSerialized]
         VertexBuffer roadBackVb = null;
         /// <summary>
         /// Index buffer for the road back.
         /// </summary>
+        [NonSerialized]
         IndexBuffer roadBackIb = null;
 
         /// <summary>
         /// Vertices for the road tunnels (sides and top).
         /// </summary>
+        [NonSerialized]
         TangentVertex[] roadTunnelVertices = null;
         /// <summary>
         /// Remember road tunnel indices because determinating the count is
         /// not so easy (we can have multiple tunnels in here).
         /// </summary>
+        [NonSerialized]
         int[] roadTunnelIndices = null;
         /// <summary>
         /// Vertex buffer for the road back (has different texture coordinates)
         /// </summary>
+        [NonSerialized]
         VertexBuffer roadTunnelVb = null;
         /// <summary>
         /// Index buffer for the road back.
         /// </summary>
+        [NonSerialized]
         IndexBuffer roadTunnelIb = null;
 
         /// <summary>
@@ -165,6 +188,7 @@ namespace RacingGame.Tracks
         /// gruard rail (leitplanke_pfahl.x model file, which is generated
         /// seperately).
         /// </summary>
+        [NonSerialized]
         GuardRail leftRail = null,
             rightRail = null;
 
@@ -174,11 +198,13 @@ namespace RacingGame.Tracks
         /// ground (TrackColumnSegment.x model file, which is generated
         /// seperately).
         /// </summary>
+        [NonSerialized]
         TrackColumns columns = null;
 
         /// <summary>
         /// Remember checkpoint segment positions for easier checkpoint checking.
         /// </summary>
+        [NonSerialized]
         List<int> checkpointSegmentPositions = new List<int>();
         #endregion
 
