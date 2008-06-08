@@ -915,7 +915,7 @@ namespace RacingGame.GameLogic
             ApplyGravityAndCheckForCollisions();
             speedDisplay = speed;
             TrackVertex vertex = RacingGamePointers.getClosestTrackPoint();
-            float dot = Vector3.Dot(carDir, vertex.dir);
+            //float dot = Vector3.Dot(carDir, vertex.dir);
             speedDisplay = RacingGamePointers.currentControlPoint;
             #endregion
         }
