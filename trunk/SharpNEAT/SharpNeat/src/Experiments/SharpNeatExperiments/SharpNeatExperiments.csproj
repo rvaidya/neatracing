@@ -89,14 +89,14 @@
     <Reference Include="System.Xml">
       <Name>System.XML</Name>
     </Reference>
-    <ProjectReference Include="..\..\..\..\..\NEATRacing\SharpNeatLib\SharpNeatLib.csproj">
-      <Project>{3A64602B-C5E0-4CB7-99B0-1FC6ABB4449A}</Project>
-      <Name>SharpNeatLib</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\..\..\RudyGraph\RudyGraph.csproj">
       <Name>RudyGraph</Name>
       <Project>{7B0AB121-5140-4BE4-8200-9E661EEC52E3}</Project>
       <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
+    </ProjectReference>
+    <ProjectReference Include="..\..\SharpNeatLib\SharpNeatLib.csproj">
+      <Project>{3A64602B-C5E0-4CB7-99B0-1FC6ABB4449A}</Project>
+      <Name>SharpNeatLib</Name>
     </ProjectReference>
   </ItemGroup>
   <ItemGroup>
