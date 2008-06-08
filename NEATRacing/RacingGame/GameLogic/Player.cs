@@ -46,6 +46,7 @@ namespace RacingGame.GameLogic
         /// </summary>
         private const int LapCount = 3;
 
+        
         /// <summary>
         /// Add lap time
         /// </summary>

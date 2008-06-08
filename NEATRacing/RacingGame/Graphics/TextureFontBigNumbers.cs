@@ -194,8 +194,10 @@ namespace RacingGame.Graphics
             char[] chars = numberText.ToCharArray();
             for (int num = 0; num < chars.Length; num++)
             {
+                int writeChar = (int)chars[num] - (int)'0';
+                if (chars[num] == '-') writeChar = (int)'0';
                 width += WriteDigit(
-                    x + width, y, height, (int)chars[num] - (int)'0');
+                    x + width, y, height, writeChar);
             }
 
             return width;
