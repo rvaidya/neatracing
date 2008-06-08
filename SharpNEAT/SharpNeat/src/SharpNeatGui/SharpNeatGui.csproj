@@ -96,11 +96,6 @@
       <Project>{7B0AB121-5140-4BE4-8200-9E661EEC52E3}</Project>
       <Name>RudyGraph</Name>
     </ProjectReference>
-    <ProjectReference Include="..\Experiments\MaxExperiment\MaxExperiment.csproj">
-      <Name>MaxExperiment</Name>
-      <Project>{28F4236D-D524-4067-A6EB-8D98065B6ED1}</Project>
-      <Package>{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}</Package>
-    </ProjectReference>
     <ProjectReference Include="..\Experiments\SharpNeatExperiments\SharpNeatExperiments.csproj">
       <Name>SharpNeatExperiments</Name>
       <Project>{D9828EED-D730-40BF-9A1C-7C3D947E7689}</Project>
