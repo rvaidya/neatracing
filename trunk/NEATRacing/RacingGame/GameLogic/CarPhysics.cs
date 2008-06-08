@@ -207,7 +207,7 @@ namespace RacingGame.GameLogic
         /// to drive!
         /// </summary>
         public float speed;
-        public float speedDisplay;
+        public float speedNEAT;
 
         /// <summary>
         /// Car up vector for orientation.
@@ -316,7 +316,7 @@ namespace RacingGame.GameLogic
         {
             get
             {
-                return speedDisplay;
+                return speed;
             }
         }
 
@@ -916,8 +916,8 @@ namespace RacingGame.GameLogic
             ApplyGravityAndCheckForCollisions();
             Vector3 trackDirection = trackMatrix.Forward;
             float dot = Vector3.Dot(carDir, trackDirection);
-            if (dot < 0) speedDisplay = -1 * speed;
-            else speedDisplay = speed;
+            if (dot < 0) speedNEAT = -1 * speed;
+            else speedNEAT = speed;
             #endregion
         }
         #endregion
