@@ -15,6 +15,7 @@ namespace SharpNeatLib.Experiments
 
         public RacingGameExperiment()
         {
+            NEATPointers.activationFunction = activationFunction;
         }
 
         #endregion
