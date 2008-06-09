@@ -842,6 +842,7 @@ namespace SharpNeatLib.Evolution
 				{
 					bestGenome = genome;
 					bestFitness = bestGenome.Fitness;
+                    NEATPointers.setGenome(bestGenome);
 				}
 
 				// Track the generation number when the species improves.
