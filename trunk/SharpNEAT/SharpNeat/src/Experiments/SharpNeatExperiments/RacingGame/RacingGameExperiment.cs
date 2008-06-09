@@ -54,7 +54,7 @@ namespace SharpNeatLib.Experiments
         {
             get
             {
-                return NEATPointers.inputCount;
+                return 8;
             }
         }
 
@@ -62,7 +62,7 @@ namespace SharpNeatLib.Experiments
         {
             get
             {
-                return NEATPointers.outputCount;
+                return 3;
             }
         }
 
