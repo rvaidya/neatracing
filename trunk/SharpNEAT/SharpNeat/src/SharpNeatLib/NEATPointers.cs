@@ -24,6 +24,7 @@ namespace SharpNeatLib
          * 7: maxSpeed
          */
         private static double[] parameters = new double[8];
+        public static int getParameterCount() { return parameters.Length; }
         /*
          * Vector Parameters:
          * 0: carPos
@@ -34,6 +35,7 @@ namespace SharpNeatLib
          * 5: trackVector
          */
         private static Vector3[] vectorParameters = new Vector3[6];
+        public static int getVectorCount() { return vectorParameters.Length; }
         private static IGenome bestGenome = null;
         public static IActivationFunction activationFunction = null;
 

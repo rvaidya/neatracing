@@ -964,6 +964,24 @@ namespace RacingGame.GameLogic
             float dot = Vector3.Dot(carDir, trackDirection);
             if (dot < 0) speedNEAT = -1 * speed;
             else speedNEAT = speed;
+            double[] parameters = new double[NEATPointers.getParameterCount()];
+            Vector3[] vectors = new Vector3[NEATPointers.getVectorCount()];
+            parameters[0] = speedNEAT;
+            parameters[1] = rotationChange;
+            parameters[2] = Acceleration;
+            parameters[3] = moveFactor;
+            parameters[4] = virtualRotationAmount;
+            parameters[5] = rotateCarAfterCollision;
+            parameters[6] = carMass;
+            parameters[7] = maxSpeed;
+            vectors[0] = carPos;
+            vectors[1] = carDir;
+            vectors[2] = carUp;
+            vectors[3] = carForce;
+            vectors[4] = trackPos;
+            vectors[5] = trackDirection;
+            NEATPointers.setParameters(parameters);
+            NEATPointers.setVectors(vectors);
             #endregion
         }
         #endregion
