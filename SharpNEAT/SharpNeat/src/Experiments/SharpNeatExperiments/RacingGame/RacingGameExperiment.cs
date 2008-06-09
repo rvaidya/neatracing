@@ -54,7 +54,7 @@ namespace SharpNeatLib.Experiments
         {
             get
             {
-                return 3;
+                return NEATPointers.inputCount;
             }
         }
 
@@ -62,7 +62,7 @@ namespace SharpNeatLib.Experiments
         {
             get
             {
-                return 1;
+                return NEATPointers.outputCount;
             }
         }
 
@@ -91,17 +91,13 @@ namespace SharpNeatLib.Experiments
         {
             get
             {
-                return @"3-Multiplexer experiment with binary value inputs/outputs.
-Evaluation consists of testing a network against each of the 8 (=2^3) possible input combinations.
-An output less than 0.5 is considered a binary 0 answer, and >=0.5 a binary 1. However, fitness is scored
-based on how close a given network's response is to each correct answer, therefore the maximum fitness 
-is 8 if exact answers are given, and the minimum possible fitness while still being correct overall is 
-approx. 4.
+                return @"3-Racing game experiment with eight inputs and three outputs.  The inputs are, in order:
+Turn angle, acceleration amount, track x, track y, track z, car position x, car position y, car position z.  Optional
+inputs include track tangent x, track tangent y, track tangent z.
+The outputs are, in order:
+Turn angle, acceleration amount.
 
-To distinguish between correct low scorers and incorrect low scorers an additional value of 100 is added 
-to the score for networks that give a correct response to each of the 8 test cases.
-
-Max fitness is therefore 108.";
+The fitness of the system is determined by the speed of the car.";
             }
         }
 
