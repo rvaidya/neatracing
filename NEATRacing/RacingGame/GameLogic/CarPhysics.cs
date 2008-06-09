@@ -528,13 +528,13 @@ namespace RacingGame.GameLogic
                 network.SetInputSignal(0, trackPoso.X);
                 network.SetInputSignal(1, trackPoso.Y);
                 network.SetInputSignal(2, trackPoso.Z);
-                network.SetInputSignal(0, carPos.X);
-                network.SetInputSignal(1, carPos.Y);
-                network.SetInputSignal(2, carPos.Z);
+                network.SetInputSignal(3, carPos.X);
+                network.SetInputSignal(4, carPos.Y);
+                network.SetInputSignal(5, carPos.Z);
                 network.MultipleSteps(NEATPointers.stepCount);
                 outputRotation = network.GetOutputSignal(0);
-                outputAcceleration = network.GetOutputSignal(0);
-                outputBrake = network.GetOutputSignal(0);
+                outputAcceleration = network.GetOutputSignal(1);
+                outputBrake = network.GetOutputSignal(2);
             }
 
             float newAccelerationForce = 0.0f;
