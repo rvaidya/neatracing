@@ -14,6 +14,8 @@ namespace RacingGame
         public static CarPhysics physics;
         public static Vector3[] splinePoints;
         public static int currentControlPoint = 0;
+        public static Vector3 trackPos = new Vector3(0,0,0);
+        public static Vector3 trackDir = new Vector3(0, 0, 0);
 
         public static TrackVertex getClosestTrackPoint()
         {

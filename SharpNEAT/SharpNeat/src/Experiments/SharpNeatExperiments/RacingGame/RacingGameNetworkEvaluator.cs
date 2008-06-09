@@ -24,7 +24,8 @@ namespace SharpNeatLib.Experiments
             AirFrictionPerSpeed = 0.66f,
             MaxAirFriction = 0.66f * 200.0f,
             CarFrictionOnRoad = 17.523456789f,
-            Gravity = 9.81f;
+            Gravity = 9.81f,
+            maxAccelerationPerSec = 2.5f * 0.85f;
         Vector3 carPos, carDir, carUp, carForce, trackPosition, trackVector;
        public double EvaluateNetwork(INetwork network)
         {
@@ -47,18 +48,29 @@ namespace SharpNeatLib.Experiments
            trackVector = vectors[5];
 
            //EXECUTE NEAT NEURAL NETWORK
+
            rotationChange *= 0.95f;
-           network.SetInputSignal(0, rotationChange);
-           network.SetInputSignal(1, acceleration);
-           network.SetInputSignal(2, trackPosition.X);
-           network.SetInputSignal(3, trackPosition.Y);
-           network.SetInputSignal(4, trackPosition.Z);
-           network.SetInputSignal(5, carPos.X);
-           network.SetInputSignal(6, carPos.Y);
-           network.SetInputSignal(7, carPos.Z);
+           network.SetInputSignal(0, trackPosition.X);
+           network.SetInputSignal(1, trackPosition.Y);
+           network.SetInputSignal(2, trackPosition.Z);
+           network.SetInputSignal(3, carPos.X);
+           network.SetInputSignal(4, carPos.Y);
+           network.SetInputSignal(5, carPos.Z);
            network.MultipleSteps(NEATPointers.stepCount);
            rotationChange = network.GetOutputSignal(0);
+           double testRotationRange = Math.Abs(1.0 *
+                        MaxRotationPerSec * moveFactor / 2.5f);
+           double absoluteRotation = Math.Abs(rotationChange);
+           if (absoluteRotation > testRotationRange)
+           {
+               return 0;
+           }
            double newAccelerationForce = network.GetOutputSignal(1);
+           double absoluteAcceleration = Math.Abs(newAccelerationForce);
+           if (absoluteAcceleration > maxAccelerationPerSec)
+           {
+               return 0;
+           }
            float slowdown = (float)network.GetOutputSignal(2);
            //END NEAT NEURAL NETWORK CODE
 

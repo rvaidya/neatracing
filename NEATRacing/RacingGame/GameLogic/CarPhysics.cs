@@ -198,7 +198,6 @@ namespace RacingGame.GameLogic
         /// <summary>
         /// NEAT instantiation of network
         /// </summary>
-        NEATPointers.getGenome;
         
         /// <summary>
         /// Car position, updated each frame by our current carSpeed vector.
@@ -506,12 +505,14 @@ namespace RacingGame.GameLogic
         public override void Update()
         {
             base.Update();
+            IGenome genome = NEATPointers.getGenome();
+            double outputRotation = 0, outputAcceleration = 0, outputBrake = 0;
 
             // If F2 is pressed toggle NEAT network input and create the 
             // network, or disable it if already toggled.
             if (Input.KeyboardF2JustPressed == true)
             {
-                if (neuralNet == false)
+                if (neuralNet == false && genome != null)
                 {
                     neuralNet = true;                
                 }
@@ -519,6 +520,21 @@ namespace RacingGame.GameLogic
                 {
                     neuralNet = false;
                 }
+            }
+            if (genome != null && neuralNet)
+            {
+                INetwork network = genome.Decode(NEATPointers.activationFunction);
+                Vector3 trackPoso = RacingGamePointers.trackPos;
+                network.SetInputSignal(0, trackPoso.X);
+                network.SetInputSignal(1, trackPoso.Y);
+                network.SetInputSignal(2, trackPoso.Z);
+                network.SetInputSignal(0, carPos.X);
+                network.SetInputSignal(1, carPos.Y);
+                network.SetInputSignal(2, carPos.Z);
+                network.MultipleSteps(NEATPointers.stepCount);
+                outputRotation = network.GetOutputSignal(0);
+                outputAcceleration = network.GetOutputSignal(0);
+                outputBrake = network.GetOutputSignal(0);
             }
 
             float newAccelerationForce = 0.0f;
@@ -554,8 +570,8 @@ namespace RacingGame.GameLogic
 
             if (neuralNet == true)
             {
-                NEATPointers.getGenome.Decode(NEATPointers.activationFunction).SetInputSignals(rotationChange, newAccelerationForce, trackPos.X, trackPos.Y, trackPos.Z, carPos.X, carPos.Y, carPos.Z);
-                NEATPointers.getGenome.Decode(NEATPointers.activationFunction).SingleStep();
+                //NEATPointers.getGenome.Decode(NEATPointers.activationFunction).SetInputSignals(rotationChange, newAccelerationForce, trackPos.X, trackPos.Y, trackPos.Z, carPos.X, carPos.Y, carPos.Z);
+                //NEATPointers.getGenome.Decode(NEATPointers.activationFunction).SingleStep();
             }
 
             // Don't use the car position and car handling if in free camera mode.
@@ -619,8 +635,7 @@ namespace RacingGame.GameLogic
             }
             else
             {
-                //NEAT network decides to turn left or right.
-                rotationChange = (float) NEATPointers.getGenome.Decode(NEATPointers.activationFunction).GetOutputSignal(0);            
+                rotationChange = (float)outputRotation;
             }
 
             float maxRot = MaxRotationPerSec * moveFactor * 1.25f;
@@ -727,9 +742,7 @@ namespace RacingGame.GameLogic
             }
             else
             {
-                // NEAT network decides if it still is accelerating 
-                // or deccelerating, skip over this if it does nothing
-                newAccelerationForce = (float) NEATPointers.getGenome.Decode(NEATPointers.activationFunction).GetOutputSignal(1);
+                newAccelerationForce = (float)outputAcceleration;
             }
 
             // Limit acceleration (but drive as fast forwards as possible if we
@@ -806,7 +819,7 @@ namespace RacingGame.GameLogic
                 else
                 {
                     // NEAT returns if it deccelerated
-                    if ( NEATPointers.getGenome.Decode(NEATPointers.activationFunction).GetOutputSignal(2) != 0)
+                    //if ( NEATPointers.getGenome.Decode(NEATPointers.activationFunction).GetOutputSignal(2) != 0)
                         downPressed = true;
                 }
 
@@ -817,7 +830,12 @@ namespace RacingGame.GameLogic
                     // Also use back for this
                     downPressed)
                 {
-                    float slowdown =
+                    float slowdown = 0;
+                    if (neuralNet)
+                    {
+                        slowdown = (float)outputBrake;
+                    }
+                    else slowdown =
                         1.0f - moveFactor *
                         // Use only half if we just decelerate
                         (downPressed ? BrakeSlowdown / 2 : BrakeSlowdown) *
@@ -941,6 +959,8 @@ namespace RacingGame.GameLogic
             // Also handle gravity.
             ApplyGravityAndCheckForCollisions();
             Vector3 trackDirection = trackMatrix.Forward;
+            RacingGamePointers.trackPos = trackPos;
+            RacingGamePointers.trackDir = trackDirection;
             float dot = Vector3.Dot(carDir, trackDirection);
             if (dot < 0) speedNEAT = -1 * speed;
             else speedNEAT = speed;
