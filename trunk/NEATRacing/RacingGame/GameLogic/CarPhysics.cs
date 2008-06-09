@@ -23,9 +23,11 @@ using RacingGame.Sounds;
 using Model = RacingGame.Graphics.Model;
 using RacingGame.Tracks;
 using RacingGame.Properties;
+using RacingGame.Landscapes;
 using SharpNeatLib;
 using SharpNeatLib.Evolution;
 using SharpNeatLib.NeuralNetwork;
+using SharpNeatLib.NeatGenome;
 #endregion
 
 namespace RacingGame.GameLogic
@@ -191,7 +193,12 @@ namespace RacingGame.GameLogic
         /// <summary>
         /// Boolean variable for toggling NEAT network on/off.
         /// </summary>
-        bool neuralNet = false; 
+        bool neuralNet = false;
+ 
+        /// <summary>
+        /// NEAT instantiation of network
+        /// </summary>
+        NEATPointers.getGenome;
         
         /// <summary>
         /// Car position, updated each frame by our current carSpeed vector.
@@ -514,9 +521,41 @@ namespace RacingGame.GameLogic
                 }
             }
 
+            float newAccelerationForce = 0.0f;
+
+            int oldTrackSegmentNumber = trackSegmentNumber;
+            // Find out where we currently are on the track.
+            RacingGameManager.Landscape.UpdateCarTrackPosition(
+                carPos, ref trackSegmentNumber, ref trackSegmentPercent);
+
+            // And get the TrackMatrix and track values at this location.
+            float roadWidth, nextRoadWidth;
+            Matrix trackMatrix =
+                RacingGameManager.Landscape.GetTrackPositionMatrix(
+                trackSegmentNumber, trackSegmentPercent,
+                out roadWidth, out nextRoadWidth);
+
+            // Set up the ground and guardrail boundings for the physics calculation.
+            Vector3 trackPos = trackMatrix.Translation;
+            RacingGameManager.Player.SetGroundPlaneAndGuardRails(
+                trackPos, trackMatrix.Up,
+                // Construct our guardrail positions for the collision testing
+                trackPos - trackMatrix.Right *
+                (roadWidth / 2 - GuardRail.InsideRoadDistance / 2),
+                trackPos - trackMatrix.Right *
+                (roadWidth / 2 - GuardRail.InsideRoadDistance / 2) +
+                trackMatrix.Forward,
+                trackPos + trackMatrix.Right *
+                (nextRoadWidth / 2 - GuardRail.InsideRoadDistance / 2),
+                trackPos + trackMatrix.Right *
+                (nextRoadWidth / 2 - GuardRail.InsideRoadDistance / 2) +
+                trackMatrix.Forward);
+            carRenderMatrix = RacingGameManager.Player.UpdateCarMatrixAndCamera();
+
             if (neuralNet == true)
             {
-                NEATPointers.bestGenome.Decode(NEATPointers.activationFunction).SetInputSignals();
+                NEATPointers.getGenome.Decode(NEATPointers.activationFunction).SetInputSignals(rotationChange, newAccelerationForce, trackPos.X, trackPos.Y, trackPos.Z, carPos.X, carPos.Y, carPos.Z);
+                NEATPointers.getGenome.Decode(NEATPointers.activationFunction).SingleStep();
             }
 
             // Don't use the car position and car handling if in free camera mode.
@@ -581,7 +620,7 @@ namespace RacingGame.GameLogic
             else
             {
                 //NEAT network decides to turn left or right.
-                rotationChange = NEATPointers.bestGenome.Decode(NEATPointers.activationFunction).GetOutputSignal(0);            
+                rotationChange = (float) NEATPointers.getGenome.Decode(NEATPointers.activationFunction).GetOutputSignal(0);            
             }
 
             float maxRot = MaxRotationPerSec * moveFactor * 1.25f;
@@ -656,7 +695,6 @@ namespace RacingGame.GameLogic
             // With keyboard, do heavy changes, but still smooth over 200ms
             // Up or left mouse button accelerates
             // Also support ASDW (querty) and AOEW (dvorak) shooter like controlling!
-            float newAccelerationForce = 0.0f;
             if (neuralNet == false)
             {            
                 if (Input.KeyboardUpPressed ||
@@ -691,16 +729,7 @@ namespace RacingGame.GameLogic
             {
                 // NEAT network decides if it still is accelerating 
                 // or deccelerating, skip over this if it does nothing
-                if (NEATPointers.bestGenome.AbstractNetwork.GetOutputSignal(1).)
-                {
-                    newAccelerationForce +=
-                        maxAccelerationPerSec;
-                }
-                else if (NEATPointers.bestGenome.AbstractNetwork.GetOutputSignal(1).)
-                {
-                    newAccelerationForce -=
-                        maxAccelerationPerSec;
-                }
+                newAccelerationForce = (float) NEATPointers.getGenome.Decode(NEATPointers.activationFunction).GetOutputSignal(1);
             }
 
             // Limit acceleration (but drive as fast forwards as possible if we
@@ -776,8 +805,8 @@ namespace RacingGame.GameLogic
                 }
                 else
                 {
-                    // NEAT returns if it wants to deccelerate
-                    if (NEATPointers.bestGenome.Decode(NEATPointers.activationFunction).GetOutputSignal(1).CompareTo('3'))
+                    // NEAT returns if it deccelerated
+                    if ( NEATPointers.getGenome.Decode(NEATPointers.activationFunction).GetOutputSignal(2) != 0)
                         downPressed = true;
                 }
 
@@ -848,10 +877,6 @@ namespace RacingGame.GameLogic
             #endregion
 
             #region Update track position and handle physics
-            int oldTrackSegmentNumber = trackSegmentNumber;
-            // Find out where we currently are on the track.
-            RacingGameManager.Landscape.UpdateCarTrackPosition(
-                carPos, ref trackSegmentNumber, ref trackSegmentPercent);
             // Was the track segment changed?
             if (trackSegmentNumber != oldTrackSegmentNumber &&
                 // And we in game?
@@ -904,38 +929,13 @@ namespace RacingGame.GameLogic
                             RacingGameManager.Player.GameTimeMilliseconds / 1000.0f);
                     }
                 }
-            }
-
-            // And get the TrackMatrix and track values at this location.
-            float roadWidth, nextRoadWidth;
-            Matrix trackMatrix =
-                RacingGameManager.Landscape.GetTrackPositionMatrix(
-                trackSegmentNumber, trackSegmentPercent,
-                out roadWidth, out nextRoadWidth);
-            
+            }         
 
             // Just set car up from trackMatrix, this should be done
             // better with a more accurate gravity model (see gravity calculation!)
             Vector3 remOldRightVec = CarRight;
             carUp = trackMatrix.Up;
             carDir = Vector3.Cross(carUp, remOldRightVec);
-
-            // Set up the ground and guardrail boundings for the physics calculation.
-            Vector3 trackPos = trackMatrix.Translation;
-            RacingGameManager.Player.SetGroundPlaneAndGuardRails(
-                trackPos, trackMatrix.Up,
-                // Construct our guardrail positions for the collision testing
-                trackPos - trackMatrix.Right *
-                (roadWidth / 2 - GuardRail.InsideRoadDistance / 2),
-                trackPos - trackMatrix.Right *
-                (roadWidth / 2 - GuardRail.InsideRoadDistance / 2) +
-                trackMatrix.Forward,
-                trackPos + trackMatrix.Right *
-                (nextRoadWidth / 2 - GuardRail.InsideRoadDistance / 2),
-                trackPos + trackMatrix.Right *
-                (nextRoadWidth / 2 - GuardRail.InsideRoadDistance / 2) +
-                trackMatrix.Forward);
-            carRenderMatrix = RacingGameManager.Player.UpdateCarMatrixAndCamera();
 
             // Finally check for collisions with the guard rails.
             // Also handle gravity.
