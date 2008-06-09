@@ -54,7 +54,7 @@ namespace SharpNeatLib.Experiments
         {
             get
             {
-                return 8;
+                return 6;
             }
         }
 
@@ -92,7 +92,7 @@ namespace SharpNeatLib.Experiments
             get
             {
                 return @"3-Racing game experiment with eight inputs and three outputs.  The inputs are, in order:
-Turn angle, acceleration amount, track x, track y, track z, car position x, car position y, car position z.  Optional
+track x, track y, track z, car position x, car position y, car position z.  Optional
 inputs include track tangent x, track tangent y, track tangent z.
 The outputs are, in order:
 Turn angle, acceleration amount.
