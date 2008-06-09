@@ -26,7 +26,7 @@ namespace SharpNeatLib.Experiments
             CarFrictionOnRoad = 17.523456789f,
             Gravity = 9.81f,
             maxAccelerationPerSec = 2.5f * 0.85f;
-        Vector3 carPos, carDir, carUp, carForce, trackPosition, trackVector;
+        Vector3 carPos, carDir, carUp, carForce, trackPosition, trackDirection;
        public double EvaluateNetwork(INetwork network)
         {
             double[] parameters = NEATPointers.getParameters();
@@ -45,7 +45,7 @@ namespace SharpNeatLib.Experiments
            carUp = vectors[2];
            carForce = vectors[3];
            trackPosition = vectors[4];
-           trackVector = vectors[5];
+           trackDirection = vectors[5];
 
            //EXECUTE NEAT NEURAL NETWORK
 
@@ -243,7 +243,12 @@ namespace SharpNeatLib.Experiments
             // Finally check for collisions with the guard rails.
             // Also handle gravity.
             ApplyGravityAndCheckForCollisions();
-            return speed;
+
+            double speedNEAT = 0;
+            float dot = Vector3.Dot(carDir, trackDirection);
+            if (dot < 0) speedNEAT = -1 * speed;
+            else speedNEAT = speed;
+            return speedNEAT;
         }
 
         /// <summary>
