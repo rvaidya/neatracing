@@ -1,11 +1,12 @@
 using System;
 using SharpNeatLib.NeuralNetwork;
+using Microsoft.Xna.Framework;
+using RacingGame.Helpers;
 
 namespace SharpNeatLib.Experiments
 {
     public class RacingGameNetworkEvaluator : INetworkEvaluator
     {
-        #region INetworkEvaluator
 
         public double EvaluateNetwork(INetwork network)
         {
@@ -70,41 +71,55 @@ namespace SharpNeatLib.Experiments
                 return string.Empty;
             }
         }
-
-        #endregion
+        double speed, rotationChange, acceleration, moveFactor, virtualRotationAmount, rotateCarAfterCollision;
+        double carMass, maxSpeed;
+        float DefaultMaxAccelerationPerSec = 2.5f,
+            MaxAcceleration = 5.75f,
+            MinAcceleration = -3.25f,
+            MaxRotationPerSec = 1.3f,
+            AirFrictionPerSpeed = 0.66f,
+            MaxAirFriction = 0.66f * 200.0f,
+            CarFrictionOnRoad = 17.523456789f,
+            Gravity = 9.81f;
+        Vector3 carPos, carDir, carUp, carForce, trackPosition, trackVector;
        public double EvaluateNetwork2(INetwork network)
         {
+            double[] parameters = NEATPointers.getParameters();
+            speed = parameters[0];
+            rotationChange = parameters[1];
+            acceleration = parameters[2];
+            moveFactor = parameters[3];
+            virtualRotationAmount = parameters[4];
+            rotateCarAfterCollision = parameters[5];
+            carMass = parameters[6];
+            maxSpeed = parameters[7];
+           
+           Vector3[] vectors = NEATPointers.getVectors();
+           carPos = vectors[0];
+           carDir = vectors[1];
+           carUp = vectors[2];
+           carForce = vectors[3];
+           trackPosition = vectors[4];
+           trackVector = vectors[5];
 
-            // If F2 is pressed toggle NEAT network input and create the 
-            // network, or disable it if already toggled.
-            if (Input.KeyboardF2JustPressed == true)
-            {
-                if (neuralNet == false)
-                {
-                    neuralNet = true;                
-                }
-                else
-                {
-                    neuralNet = false;
-                }
-            }
+           //EXECUTE NEAT NEURAL NETWORK
+           rotationChange *= 0.95f;
+           network.SetInputSignal(0, rotationChange);
+           network.SetInputSignal(1, acceleration);
+           network.SetInputSignal(2, trackPosition.X);
+           network.SetInputSignal(3, trackPosition.Y);
+           network.SetInputSignal(4, trackPosition.Z);
+           network.SetInputSignal(5, carPos.X);
+           network.SetInputSignal(6, carPos.Y);
+           network.SetInputSignal(7, carPos.Z);
+           network.MultipleSteps(NEATPointers.stepCount);
+           rotationChange = network.GetOutputSignal(0);
+           double newAccelerationForce = network.GetOutputSignal(1);
+           float slowdown = (float)network.GetOutputSignal(2);
+           //END NEAT NEURAL NETWORK CODE
 
-            if (neuralNet == true)
-            {
-                //NEATPointers.bestGenome.Decode(NEATPointers.activationFunction).SetInputSignals();
-            }
 
-            // Don't use the car position and car handling if in free camera mode.
-            if (RacingGameManager.Player.FreeCamera)
-                return;
 
-            // Only allow control if zommed in, use carOnGround as helper
-            if (ZoomInTime > 0)
-                isCarOnGround = false;
-
-            wheelPos += BaseGame.MoveFactorPerSecond * speed / WheelMovementSpeed;
-
-            float moveFactor = BaseGame.MoveFactorPerSecond;
             // Make sure this is never below 0.001f and never above 0.5f
             // Else our formulars below might mess up or carSpeed and carForce!
             if (moveFactor < 0.001f)
@@ -112,54 +127,10 @@ namespace SharpNeatLib.Experiments
             if (moveFactor > 0.5f)
                 moveFactor = 0.5f;
 
-            #region Handle rotations
-            float effectiveSensitivity = MinSensitivity +
-                GameSettings.Default.ControllerSensitivity;
-
+            
             // First handle rotations (reduce last value)
-            rotationChange *= 0.95f;
-
-            // Left/right changes rotation
-            if (neuralNet == false)
-            {
-                if (Input.KeyboardLeftPressed ||
-                    Input.Keyboard.IsKeyDown(Keys.A))
-                    rotationChange += effectiveSensitivity *
-                        MaxRotationPerSec * moveFactor / 2.5f;
-                else if (Input.KeyboardRightPressed ||
-                    Input.Keyboard.IsKeyDown(Keys.D) ||
-                    Input.Keyboard.IsKeyDown(Keys.E))
-                    rotationChange -= effectiveSensitivity *
-                        MaxRotationPerSec * moveFactor / 2.5f;
-                else
-                    rotationChange = 0;
-
-                if (Input.MouseXMovement != 0)
-                    rotationChange -= effectiveSensitivity *
-                        (Input.MouseXMovement / 15.0f) *
-                        MaxRotationPerSec * moveFactor;
-                if (Input.IsGamePadConnected)
-                {
-                    // More dynamic force changing with gamepad (slow, faster, etc.)
-                    rotationChange -= effectiveSensitivity *
-                        Input.GamePad.ThumbSticks.Left.X *
-                        MaxRotationPerSec * moveFactor / 1.12345f;
-                    // Also allow pad to simulate same behaviour as on keyboard
-                    if (Input.GamePad.DPad.Left == ButtonState.Pressed)
-                        rotationChange += effectiveSensitivity *
-                            MaxRotationPerSec * moveFactor / 1.5f;
-                    else if (Input.GamePad.DPad.Right == ButtonState.Pressed)
-                        rotationChange -= effectiveSensitivity *
-                            MaxRotationPerSec * moveFactor / 1.5f;
-                }
-            }
-            else
-            {
-                //NEAT network decides to turn left or right.
-                //rotationChange = NEATPointers.bestGenome.Decode(NEATPointers.activationFunction).GetOutputSignal(0);            
-            }
-
-            float maxRot = MaxRotationPerSec * moveFactor * 1.25f;
+            
+            float maxRot = (float) (MaxRotationPerSec * moveFactor * 1.25);
 
             // Handle car rotation after collision
             if (rotateCarAfterCollision != 0)
@@ -199,85 +170,19 @@ namespace SharpNeatLib.Experiments
             // Interpolate rotatation amount.
             virtualRotationAmount += rotationChange;
             // Smooth over 200ms
-            float interpolatedRotationChange =
-                (rotationChange + virtualRotationAmount) *
-                moveFactor / 0.225f;
+            float interpolatedRotationChange = (float)
+                ((rotationChange + virtualRotationAmount) *
+                moveFactor / 0.225);
             virtualRotationAmount -= interpolatedRotationChange;
-            if (isCarOnGround)
+            if (true)
                 carDir = Vector3.TransformNormal(carDir,
                     Matrix.CreateFromAxisAngle(carUp, interpolatedRotationChange));
-            #endregion
 
-            #region Handle view distance (page up/down and mouse wheel)
-            if (Input.Keyboard.IsKeyDown(Keys.PageUp) ||
-                Input.GamePadXPressed)
-                viewDistance -= moveFactor * 2.0f;
-            if (Input.Keyboard.IsKeyDown(Keys.PageDown) ||
-                Input.GamePadYPressed)
-                viewDistance += moveFactor * 2.0f;
-            if (Input.MouseWheelDelta != 0)
-                viewDistance -= Input.MouseWheelDelta / 500.0f;
-
-            // Restrict the camera's distance to a range, but allow the camera
-            // to be as far as it likes during the start of race zoom in
-            if (ZoomInTime <= 0)
-                viewDistance =
-                    MathHelper.Clamp(viewDistance, MinViewDistance, MaxViewDistance);
-            else
-                viewDistance = Math.Max(viewDistance, MinViewDistance);
-            #endregion
-
-            #region Handle speed
+            
             // With keyboard, do heavy changes, but still smooth over 200ms
             // Up or left mouse button accelerates
             // Also support ASDW (querty) and AOEW (dvorak) shooter like controlling!
-            float newAccelerationForce = 0.0f;
-            if (neuralNet == false)
-            {            
-                if (Input.KeyboardUpPressed ||
-                    Input.Keyboard.IsKeyDown(Keys.W) ||
-                    Input.MouseLeftButtonPressed ||
-                    Input.GamePadAPressed)
-                    newAccelerationForce +=
-                        maxAccelerationPerSec;// * moveFactor;
-                // Down or right mouse button decelerates
-                else if (Input.KeyboardDownPressed ||
-                    Input.Keyboard.IsKeyDown(Keys.S) ||
-                    Input.Keyboard.IsKeyDown(Keys.O) ||
-                    Input.MouseRightButtonPressed)
-                    newAccelerationForce -=
-                        maxAccelerationPerSec;// * moveFactor;
-                else if (Input.IsGamePadConnected)
-                {
-                    // More dynamic force changing with gamepad (slow, faster, etc.)
-                    newAccelerationForce +=
-                        (Input.GamePad.Triggers.Right) *
-                        maxAccelerationPerSec;// *moveFactor;
-                    // Also allow pad to simulate same behaviour as on keyboard
-                    if (Input.GamePad.DPad.Up == ButtonState.Pressed)
-                        newAccelerationForce +=
-                            maxAccelerationPerSec;
-                    else if (Input.GamePad.DPad.Down == ButtonState.Pressed)
-                        newAccelerationForce -=
-                            maxAccelerationPerSec;
-                }
-            }
-            else
-            {
-                // NEAT network decides if it still is accelerating 
-                // or deccelerating, skip over this if it does nothing
-                /*if (NEATPointers.bestGenome.AbstractNetwork.GetOutputSignal(1))
-                {
-                    newAccelerationForce +=
-                        maxAccelerationPerSec;
-                }
-                else if (NEATPointers.bestGenome.AbstractNetwork.GetOutputSignal(1))
-                {
-                    newAccelerationForce -=
-                        maxAccelerationPerSec;
-                }*/
-            }
-
+            
             // Limit acceleration (but drive as fast forwards as possible if we
             // are moving backwards)
             if (speed > 0 &&
@@ -287,15 +192,15 @@ namespace SharpNeatLib.Experiments
                 newAccelerationForce = MinAcceleration;
 
             // Add acceleration force to total car force, but use the current carDir!
-            if (isCarOnGround)
+            if (true)
                 carForce +=
-                    carDir * newAccelerationForce * (moveFactor * 85);
+                    carDir * (float)(newAccelerationForce * (moveFactor * 85));
 
             // Change speed with standard formula, use acceleration as our force
-            float oldSpeed = speed;
-            Vector3 speedChangeVector = carForce / carMass;
+            float oldSpeed = (float) speed;
+            Vector3 speedChangeVector = carForce / (float)carMass;
             // Only use the amount important for our current direction (slower rot)
-            if (isCarOnGround &&
+            if (true &&
                 speedChangeVector.Length() > 0)
             {
                 float speedApplyFactor =
@@ -319,56 +224,35 @@ namespace SharpNeatLib.Experiments
 
             // Max. air friction to MaxAirFiction, else driving very fast becomes
             // too hard.
-            float airFriction = AirFrictionPerSpeed * Math.Abs(speed);
+            float airFriction = (float)(AirFrictionPerSpeed * Math.Abs(speed));
             if (airFriction > MaxAirFriction)
                 airFriction = MaxAirFriction;
             // Don't use ground friction if we are not on the ground.
             float groundFriction = CarFrictionOnRoad;
-            if (isCarOnGround == false)
-                groundFriction = 0;
-
+            
             carForce *= 1.0f - (0.275f * 0.02125f *
                 0.2f * // 20% for force slowdown
                 (groundFriction + airFriction));
             // Reduce the speed, but use very low values to make the game more fun!
-            float noFrictionSpeed = speed;
+            float noFrictionSpeed = (float)speed;
             speed *= 1.0f - (0.01f *
                 0.1f * 0.02125f *
                 (groundFriction + airFriction));
             // Never change more than by 1
             if (speed < noFrictionSpeed - 1)
                 speed = noFrictionSpeed - 1;
-
-            if (isCarOnGround)
+            
+            if (true)
             {
-                bool downPressed = false;
-                if (neuralNet == false)
+                
+                if (true)
                 {
-                    downPressed =
-                        Input.MouseRightButtonPressed ||
-                        Input.KeyboardDownPressed ||
-                        Input.GamePad.DPad.Down == ButtonState.Pressed;
-                }
-                else
-                {
-                    // NEAT returns if it wants to deccelerate
-                    //if (NEATPointers.bestGenome.Decode(NEATPointers.activationFunction).GetOutputSignal(1).CompareTo('3'))
-                        downPressed = true;
-                }
-
-                if (Input.Keyboard.IsKeyDown(Keys.Space) ||
-                    Input.MouseMiddleButtonPressed ||
-                    Input.GamePad.Triggers.Left > 0.5f ||
-                    Input.GamePadBPressed ||
-                    // Also use back for this
-                    downPressed)
-                {
-                    float slowdown =
+                    /*float slowdown =
                         1.0f - moveFactor *
                         // Use only half if we just decelerate
                         (downPressed ? BrakeSlowdown / 2 : BrakeSlowdown) *
                         // Don't brake so much if we are already driving backwards
-                        (speed < 0 ? 0.33f : 1.0f);
+                        (speed < 0 ? 0.33f : 1.0f);*/
                     speed *= Math.Max(0, slowdown);
                     // Limit to max. 100 mph slowdown per sec
                     if (speed > oldSpeed + 100 * moveFactor)
@@ -377,36 +261,19 @@ namespace SharpNeatLib.Experiments
                         speed = (oldSpeed - 100 * moveFactor);
 
                     // Remember that we slowed down for generating tracks.
-                    downPressed = true;
+                    //downPressed = true;
                 }
 
                 // Calculate pitch depending on the force
-                float speedChange = speed - oldSpeed;
+                float speedChange = (float)(speed - oldSpeed);
 
-                // Add brake tracks.
-                if (speed > 0.5f && speed < 7.5f && speedChange > 5.5f * moveFactor ||
-                    speed > 0.75f && speedChange < 10 * moveFactor && downPressed)
-                {
-                    Sound.Sounds brakeType =
-                        Sound.GetBreakSoundType(speed, speedChange, rotationChange);
-
-                    // Add brake tracks for major breaks
-                    if (brakeType == Sound.Sounds.BrakeCurveMajor ||
-                        brakeType == Sound.Sounds.BrakeMajor)
-                    {
-                        RacingGameManager.Landscape.AddBrakeTrack(this);
-                    }
-
-                    // And play sound for braking
-                    Sound.PlayBrakeSound(brakeType);
-                }
-
+                
                 // Limit speed change, never apply more than 5 per sec.
                 if (speedChange < -8 * moveFactor)
-                    speedChange = -8 * moveFactor;
+                    speedChange = (float)(-8 * moveFactor);
                 if (speedChange > 8 * moveFactor)
-                    speedChange = 8 * moveFactor;
-                carPitchPhysics.ChangePos(speedChange);
+                    speedChange = (float)(8 * moveFactor);
+                //carPitchPhysics.ChangePos(speedChange);
             }
 
             // Limit speed
@@ -415,115 +282,14 @@ namespace SharpNeatLib.Experiments
             if (speed < -maxSpeed)
                 speed = -maxSpeed;
 
-            // Apply speed and calculate new car position.
-            carPos += speed * carDir * moveFactor * 1.75f;
-
-            // Handle pitch spring
-            carPitchPhysics.Simulate(moveFactor);
-            #endregion
-
-            #region Update track position and handle physics
-            int oldTrackSegmentNumber = trackSegmentNumber;
-            // Find out where we currently are on the track.
-            RacingGameManager.Landscape.UpdateCarTrackPosition(
-                carPos, ref trackSegmentNumber, ref trackSegmentPercent);
-            // Was the track segment changed?
-            if (trackSegmentNumber != oldTrackSegmentNumber &&
-                // And we in game?
-                RacingGameManager.InGame && !GameOver)
-            {
-                // Was this the start? Did we finish a lap?
-                if (trackSegmentNumber == 0 &&
-                    // Ignore if we missed one checkpoint.
-                    RacingGameManager.Landscape.NewReplay.CheckpointTimes.Count >=
-                    RacingGameManager.Landscape.CheckpointSegmentPositions.Count - 1)
-                {
-                    // Show time we made for this lap
-                    BaseGame.UI.AddTimeFadeupEffect((int)GameTimeMilliseconds,
-                        UIRenderer.TimeFadeupMode.Normal);
-
-                    // We finished this lap, start next
-                    StartNewLap();
-                }
-                else
-                {
-                    // Always only check for the next checkpoint
-                    int num =
-                        RacingGameManager.Landscape.NewReplay.CheckpointTimes.Count;
-                    if (ZoomInTime <= 0 && // Do not check before race starts
-                        num <
-                        RacingGameManager.Landscape.CheckpointSegmentPositions.Count &&
-                        RacingGameManager.Landscape.CheckpointSegmentPositions[num] >
-                        oldTrackSegmentNumber &&
-                        RacingGameManager.Landscape.CheckpointSegmentPositions[num] <=
-                        trackSegmentNumber)
-                    {
-                        // We passed that checkpoint, show time
-                        // Show improvements of time stored in best replay.
-                        int differenceMs =
-                            RacingGameManager.Landscape.CompareCheckpointTime(num);
-
-                        if (differenceMs < 0)
-                            Sound.Play(Sound.Sounds.CheckpointBetter);
-                        else
-                            Sound.Play(Sound.Sounds.CheckpointWorse);
-
-                        BaseGame.UI.AddTimeFadeupEffect(
-                            //normal: (int)GameTimeMilliseconds,
-                            Math.Abs(differenceMs),
-                            differenceMs < 0 ? UIRenderer.TimeFadeupMode.Minus :
-                            UIRenderer.TimeFadeupMode.Plus);
-
-                        // Add this checkpoint time to the current replay
-                        RacingGameManager.Landscape.NewReplay.CheckpointTimes.Add(
-                            RacingGameManager.Player.GameTimeMilliseconds / 1000.0f);
-                    }
-                }
-            }
-
-            // And get the TrackMatrix and track values at this location.
-            float roadWidth, nextRoadWidth;
-            Matrix trackMatrix =
-                RacingGameManager.Landscape.GetTrackPositionMatrix(
-                trackSegmentNumber, trackSegmentPercent,
-                out roadWidth, out nextRoadWidth);
             
-
-            // Just set car up from trackMatrix, this should be done
-            // better with a more accurate gravity model (see gravity calculation!)
-            Vector3 remOldRightVec = CarRight;
-            carUp = trackMatrix.Up;
-            carDir = Vector3.Cross(carUp, remOldRightVec);
-
-            // Set up the ground and guardrail boundings for the physics calculation.
-            Vector3 trackPos = trackMatrix.Translation;
-            RacingGameManager.Player.SetGroundPlaneAndGuardRails(
-                trackPos, trackMatrix.Up,
-                // Construct our guardrail positions for the collision testing
-                trackPos - trackMatrix.Right *
-                (roadWidth / 2 - GuardRail.InsideRoadDistance / 2),
-                trackPos - trackMatrix.Right *
-                (roadWidth / 2 - GuardRail.InsideRoadDistance / 2) +
-                trackMatrix.Forward,
-                trackPos + trackMatrix.Right *
-                (nextRoadWidth / 2 - GuardRail.InsideRoadDistance / 2),
-                trackPos + trackMatrix.Right *
-                (nextRoadWidth / 2 - GuardRail.InsideRoadDistance / 2) +
-                trackMatrix.Forward);
-            carRenderMatrix = RacingGameManager.Player.UpdateCarMatrixAndCamera();
 
             // Finally check for collisions with the guard rails.
             // Also handle gravity.
             ApplyGravityAndCheckForCollisions();
-            Vector3 trackDirection = trackMatrix.Forward;
-            float dot = Vector3.Dot(carDir, trackDirection);
-            if (dot < 0) speedNEAT = -1 * speed;
-            else speedNEAT = speed;
-            #endregion
+            return speed;
         }
-        #endregion
 
-        #region CheckForCollisions
         /// <summary>
         /// Current gravity speed, increases as we fly around ^^
         /// </summary>
@@ -539,9 +305,7 @@ namespace SharpNeatLib.Experiments
         public void ApplyGravityAndCheckForCollisions()
         {
             // Don't do it in the menu
-            if (RacingGameManager.InMenu)
-                return;
-
+            
             // Calc normals for the guard rail with help of the next guard rail
             // position and the ground normal.
             Vector3 guardrailLeftVec =
@@ -555,7 +319,6 @@ namespace SharpNeatLib.Experiments
             float roadWidth = (guardrailLeft - guardrailRight).Length();
 
             // Calculate position we will have NEXT frame!
-            float moveFactor = BaseGame.MoveFactorPerSecond;
             Vector3 pos = carPos;
 
             // Check all 4 corner points of our car.
@@ -584,13 +347,10 @@ namespace SharpNeatLib.Experiments
             // Check for each corner if we collide with the guard rail
             for (int num = 0; num < carCorners.Length; num++)
             {
-                #region Apply gravity
                 // Apply gravity if we are flying, do this for each wheel.
                 if (carCorners[num].Z > groundPlanePos.Z)
                     applyGravity += Gravity / 4;
-                #endregion
 
-                #region Hit guardrail
                 // Hit any guardrail?
                 float leftDist = Vector3Helper.DistanceToLine(
                     carCorners[num], guardrailLeft, nextGuardrailLeft);
@@ -617,7 +377,6 @@ namespace SharpNeatLib.Experiments
                     if (Math.Abs(collisionAngle) < MathHelper.Pi / 4.0f)
                     {
                         // Play crash sound
-                        Sound.PlayCrashSound(false);
 
                         // For front wheels to full collision rotation, for back half!
                         if (num < 2)
@@ -625,18 +384,13 @@ namespace SharpNeatLib.Experiments
                             rotateCarAfterCollision = -collisionAngle / 1.5f;
 
                             speed *= 0.93f;
-                            if (viewDistance > 0.75f)
-                                viewDistance -= 0.1f;
                         }
                         else
                         {
                             rotateCarAfterCollision = -collisionAngle / 2.5f;
 
                             speed *= 0.96f;
-                            if (viewDistance > 0.75f)
-                                viewDistance -= 0.05f;
                         }
-                        ChaseCamera.WobbelCamera(0.00075f * speed);
                     }
 
                     // If 90-45 degrees (in either direction), make frontal crash
@@ -648,10 +402,6 @@ namespace SharpNeatLib.Experiments
                             rotateCarAfterCollision = +collisionAngle / 3.0f;
 
                         // Play crash sound
-                        Sound.PlayCrashSound(true);
-
-                        // Shake camera
-                        ChaseCamera.WobbelCamera(0.005f * speed);
 
                         // Just stop car!
                         speed = 0;
@@ -663,17 +413,14 @@ namespace SharpNeatLib.Experiments
                     // Always make sure we are OUTSIDE of the collision range for
                     // the next frame. But first find out how much we have to move.
                     float speedDistanceToGuardrails =
-                        speed * Math.Abs(Vector3.Dot(carDir, guardrailLeftNormal));
+                        (float)(speed * Math.Abs(Vector3.Dot(carDir, guardrailLeftNormal)));
 
                     if (leftDist > 0)
                     {
-                        float correctCarPosValue = (leftDist + 0.01f +
-                            0.1f * speedDistanceToGuardrails * moveFactor);
+                        float correctCarPosValue = (float)((leftDist + 0.01f +
+                            0.1f * speedDistanceToGuardrails * moveFactor));
                         carPos += correctCarPosValue * guardrailLeftNormal;
                     }
-
-                    //Alert NEAT of collision
-
                 }
 
                 if (rightDist < 0.1f ||
@@ -691,8 +438,7 @@ namespace SharpNeatLib.Experiments
                     // Just correct rotation if 0-45 degrees (slowly)
                     if (Math.Abs(collisionAngle) < MathHelper.Pi / 4.0f)
                     {
-                        // Play crash sound
-                        Sound.PlayCrashSound(false);
+                        
 
                         // For front wheels to full collision rotation, for back half!
                         if (num < 2)
@@ -700,18 +446,13 @@ namespace SharpNeatLib.Experiments
                             rotateCarAfterCollision = +collisionAngle / 1.5f;
 
                             speed *= 0.935f;
-                            if (viewDistance > 0.75f)
-                                viewDistance -= 0.1f;
                         }
                         else
                         {
                             rotateCarAfterCollision = +collisionAngle / 2.5f;
 
                             speed *= 0.96f;
-                            if (viewDistance > 0.75f)
-                                viewDistance -= 0.05f;
                         }
-                        ChaseCamera.WobbelCamera(0.00075f * speed);
                     }
 
                     // If 90-45 degrees (in either direction), make frontal crash
@@ -722,83 +463,14 @@ namespace SharpNeatLib.Experiments
                         if (Math.Abs(collisionAngle) < MathHelper.Pi / 3.0f)
                             rotateCarAfterCollision = +collisionAngle / 3.0f;
 
-                        // Play crash sound
-                        Sound.PlayCrashSound(true);
-
-                        // Shake camera
-                        ChaseCamera.WobbelCamera(0.005f * speed);
 
                         // Just stop car!
                         speed = 0;
                     }
-
-                    // For all collisions, kill the current car force
-                    carForce = Vector3.Zero;
-
-                    // Always make sure we are OUTSIDE of the collision range for
-                    // the next frame. But first find out how much we have to move.
-                    float speedDistanceToGuardrails =
-                        speed * Math.Abs(Vector3.Dot(carDir, guardrailLeftNormal));
-
-                    if (rightDist > 0)
-                    {
-                        float correctCarPosValue = (rightDist + 0.01f +
-                            0.1f * speedDistanceToGuardrails * moveFactor);
-                        carPos += correctCarPosValue * guardrailRightNormal;
-                    }
                 }
-                #endregion
-            }
-
-            ApplyGravity();
-        }
-
-        /// <summary>
-        /// Apply gravity
-        /// </summary>
-        private void ApplyGravity()
-        {
-            float moveFactor = BaseGame.MoveFactorPerSecond;
-
-            // Fix car on ground
-            float distFromGround = Vector3Helper.SignedDistanceToPlane(
-                carPos,
-                // Substract a little to let car be more on ground and not fly around.
-                groundPlanePos - new Vector3(0, 0, 0.15f),
-                groundPlaneNormal);
-            isCarOnGround = distFromGround > -0.5f;
-            // Use very hard and instant gravity to fix if car is below ground!
-            float maxGravity = Gravity * moveFactor;
-            // Use more smooth gravity for jumping
-            // (Needs tweaking! see formula above)
-            float minGravity = -Gravity * moveFactor;
-            if (distFromGround > maxGravity)
-            {
-                distFromGround = maxGravity;
-                gravitySpeed = 0;
-            }
-
-            if (distFromGround < minGravity)
-            {
-                distFromGround = minGravity;
-                gravitySpeed -= distFromGround;
-            }
-
-            carPos.Z += distFromGround;
-
-            // Loopings are currently buggy, fix by putting car directly road!
-            // Find out if this is a looping
-            bool upsideDown = carUp.Z < +0.05f;
-            bool movingUp = carDir.Z > 0.65f;
-            bool movingDown = carDir.Z < -0.65f;
-            if (upsideDown || movingUp || movingDown)
-            {
-                carPos.Z = groundPlanePos.Z;
             }
         }
-        #endregion
 
-        #region SetGuardRails
         /// <summary>
         /// Ground plane and guardrail positions.
         /// We update this every frame!
@@ -829,77 +501,9 @@ namespace SharpNeatLib.Experiments
             guardrailRight = setGuardrailRight;
             nextGuardrailRight = setNextGuardrailRight;
         }
-        #endregion
 
-        #region UpdateCarMatrixAndCamera
         /// <summary>
         /// Update car matrix and camera
         /// </summary>
-        public Matrix UpdateCarMatrixAndCamera()
-        {
-            // Get car matrix with help of the current car position, dir and up
-            Matrix carMatrix = Matrix.Identity;
-            carMatrix.Right = CarRight;
-            carMatrix.Up = carUp;
-            carMatrix.Forward = carDir;
-            carMatrix.Translation = carPos;
-
-            // Change distance based on our speed
-            float chaseCamDistance =
-                (4.25f + 9.75f * speed / maxSpeed) * viewDistance;
-            if (RacingGameManager.InMenu == false &&
-                ZoomInTime > 1500)
-            {
-                // Calculate zooming in camera position
-                Vector3 camPos =
-                    carPos + carUp * CarHeight +
-                    carMatrix.Forward * (chaseCamDistance +
-                    (MathHelper.Max(ZoomInTime - StartGameZoomedInTime, 0.0f)
-                        / ((float)StartGameZoomTimeMilliseconds)) * 250.0f)
-                    - carMatrix.Up * (0.6f +
-                    (MathHelper.Max(ZoomInTime - StartGameZoomedInTime, 0.0f)
-                        / ((float)StartGameZoomTimeMilliseconds)) * 200.0f);
-
-                // Make sure we don't interpolate at the first time
-                if (ZoomInTime - BaseGame.ElapsedTimeThisFrameInMilliseconds >= 3000)
-                    RacingGameManager.Player.SetCameraPosition(camPos);
-                else
-                    RacingGameManager.Player.InterpolateCameraPosition(camPos);
-            }
-            else if (RacingGameManager.Player.FreeCamera)
-                RacingGameManager.Player.InterpolateCameraPosition(
-                    carPos + carUp * CarHeight +
-                    carMatrix.Forward * chaseCamDistance -
-                    carMatrix.Up * chaseCamDistance / (viewDistance + 6.0f) -
-                    carMatrix.Up * 1.0f);
-            else if (RacingGameManager.InMenu &&
-                BaseGame.TotalTimeMilliseconds < 100)
-                // No interpolation in menu, just set it (at least for the first ms)
-                RacingGameManager.Player.SetCameraPosition(
-                    carPos + carUp * CarHeight +
-                    carMatrix.Forward * chaseCamDistance -
-                    carMatrix.Up * 0.6f);
-            else
-                RacingGameManager.Player.InterpolateCameraPosition(
-                    carPos + carMatrix.Up * CarHeight +
-                    carMatrix.Forward * chaseCamDistance / 1.125f -
-                    carMatrix.Up * 0.8f);
-
-            // Save this carMatrix into the current replay every time the
-            // replay interval passes.
-            if (RacingGameManager.Player.GameTimeMilliseconds >
-                RacingGameManager.Landscape.NewReplay.NumberOfTrackMatrices *
-                Replay.TrackMatrixIntervals * 1000.0f)
-                RacingGameManager.Landscape.NewReplay.AddCarMatrix(carMatrix);
-
-            // For rendering rotate car to stay correctly on the road
-            carMatrix =
-                Matrix.CreateRotationX(MathHelper.Pi / 2.0f -
-                carPitchPhysics.pos / 60) *
-                Matrix.CreateRotationZ(MathHelper.Pi) *
-                carMatrix;
-
-            return carMatrix;
-        }
     }
 }

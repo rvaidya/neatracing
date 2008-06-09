@@ -138,10 +138,6 @@
     <None Include="ClassDiagram1.cd" />
   </ItemGroup>
   <ItemGroup>
-    <ProjectReference Include="..\..\SharpNEAT\SharpNeat\src\Experiments\SharpNeatExperiments\SharpNeatExperiments.csproj">
-      <Project>{D9828EED-D730-40BF-9A1C-7C3D947E7689}</Project>
-      <Name>SharpNeatExperiments</Name>
-    </ProjectReference>
     <ProjectReference Include="..\..\SharpNEAT\SharpNeat\src\SharpNeatGui\SharpNeatGui.csproj">
       <Project>{52441FF4-57D8-4FD9-B0C5-5CC6ADDB021B}</Project>
       <Name>SharpNeatGui</Name>
