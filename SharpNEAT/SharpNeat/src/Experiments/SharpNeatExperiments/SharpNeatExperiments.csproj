@@ -210,8 +210,8 @@
     <Compile Include="RacingGame\RacingGameNetworkEvaluator.cs">
       <SubType>Code</SubType>
     </Compile>
-    <Compile Include="RacingGame\RacingGameStandaloneExperiment.cs" />
-    <Compile Include="RacingGame\RacingGameStandaloneNetworkEvaluator.cs" />
+    <Compile Include="RacingGame\RGTrainingExperiment.cs" />
+    <Compile Include="RacingGame\RGTrainingNetworkEvaluator.cs" />
     <Compile Include="RacingGame\RacingGameStateObject.cs" />
     <Compile Include="SimpleOcr\BitImage.cs">
       <SubType>Code</SubType>
