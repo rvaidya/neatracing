@@ -1,0 +1,27 @@
+<genome id="7234" species-id="44" age="1" fitness="37.36" activation-fn-id="SteepenedSigmoid">
+  <neurons>
+    <neuron id="0" type="bias" />
+    <neuron id="1" type="in" />
+    <neuron id="2" type="in" />
+    <neuron id="3" type="in" />
+    <neuron id="4" type="in" />
+    <neuron id="5" type="in" />
+    <neuron id="6" type="in" />
+    <neuron id="7" type="out" />
+    <neuron id="8" type="out" />
+    <neuron id="9" type="out" />
+  </neurons>
+  <connections>
+    <connection innov-id="10" src-id="0" tgt-id="7" weight="-3.5779117792844772" />
+    <connection innov-id="12" src-id="2" tgt-id="7" weight="0.53730382495559748" />
+    <connection innov-id="13" src-id="3" tgt-id="7" weight="0.22064412282779813" />
+    <connection innov-id="15" src-id="5" tgt-id="7" weight="-0.5161952098365874" />
+    <connection innov-id="17" src-id="0" tgt-id="8" weight="4.7640598115045574" />
+    <connection innov-id="20" src-id="3" tgt-id="8" weight="0.97090136422775686" />
+    <connection innov-id="22" src-id="5" tgt-id="8" weight="-0.00926819425076246" />
+    <connection innov-id="24" src-id="0" tgt-id="9" weight="4.9144843589048834" />
+    <connection innov-id="28" src-id="4" tgt-id="9" weight="-0.48591994680464268" />
+    <connection innov-id="29" src-id="5" tgt-id="9" weight="-0.6911603549961" />
+    <connection innov-id="30" src-id="6" tgt-id="9" weight="1.4816145925316961" />
+  </connections>
+</genome>
