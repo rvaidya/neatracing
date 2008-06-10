@@ -208,7 +208,7 @@ namespace RacingGame.GameLogic
         {
             // Set gameOver to true to mark this game as ended.
             isGameOver = true;
-
+            RacingGamePointers.stopTrace();
             // Upload highscore
             if (alreadyUploadedHighscore == false)
             {
@@ -301,6 +301,10 @@ namespace RacingGame.GameLogic
             // Don't handle any more game logic if game is over or still zooming in.
             if (CanControlCar == false)
                 return;
+            else if (RacingGamePointers.traceStarted == false)
+            {
+                RacingGamePointers.startTrace();
+            }
 
             // Increase game time
             currentGameTimeMilliseconds += BaseGame.ElapsedTimeThisFrameInMilliseconds;

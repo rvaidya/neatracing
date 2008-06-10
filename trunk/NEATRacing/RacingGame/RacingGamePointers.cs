@@ -6,6 +6,7 @@ using RacingGame.GameLogic;
 using Microsoft.Xna.Framework;
 using RacingGame.Tracks;
 using SharpNeat;
+using System.IO;
 
 namespace RacingGame
 {
@@ -18,6 +19,31 @@ namespace RacingGame
         public static Vector3 trackPos = new Vector3(0,0,0);
         public static Vector3 trackDir = new Vector3(0, 0, 0);
         public static Form1 ui;
+        public static TextWriter tfw = null;
+        public static double savedTime = 0;
+        public static bool traceStarted = false;
+
+        public static void startTrace()
+        {
+            if (tfw != null)
+            {
+                tfw.Close();
+                tfw = null;
+            }
+            String name = DateTime.Now.ToString("yyyy.MM.dd hh.mm.ss");
+            tfw = new StreamWriter("data/" + name + ".txt");
+            traceStarted = true;
+        }
+        public static void stopTrace()
+        {
+            if (tfw != null)
+            {
+                tfw.Close();
+                tfw = null;
+                traceStarted = false;
+            }
+        }
+
 
         public static TrackVertex getClosestTrackPoint()
         {

@@ -9,7 +9,7 @@ namespace SharpNeatLib.Experiments
 
 		public double EvaluateNetwork(INetwork network)
 		{
-			double fitness=0.0;
+            double fitness = 0.0;
 			bool success=true;
 
 			// 8 test cases.
