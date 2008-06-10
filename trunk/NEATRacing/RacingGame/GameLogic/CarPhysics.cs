@@ -529,15 +529,14 @@ namespace RacingGame.GameLogic
             {
                 INetwork network = genome.Decode(NEATPointers.activationFunction);
                 Vector3 trackPoso = RacingGamePointers.trackPos;
-                network.SetInputSignal(0, trackPoso.X);
-                network.SetInputSignal(1, trackPoso.Y);
-                network.SetInputSignal(2, trackPoso.Z);
-                network.SetInputSignal(3, trackPoso.X);
-                network.SetInputSignal(4, trackPoso.Y);
-                network.SetInputSignal(5, trackPoso.Z);
-                network.SetInputSignal(6, carPos.X);
-                network.SetInputSignal(7, carPos.Y);
-                network.SetInputSignal(8, carPos.Z);
+                Vector3 trackDiro = RacingGamePointers.trackDir;
+                Vector3 positionDiff = carPos - trackPoso;
+                network.SetInputSignal(0, positionDiff.X);
+                network.SetInputSignal(1, positionDiff.Y);
+                network.SetInputSignal(2, positionDiff.Z);
+                network.SetInputSignal(3, trackDiro.X);
+                network.SetInputSignal(4, trackDiro.Y);
+                network.SetInputSignal(5, trackDiro.Z);
                 network.MultipleSteps(NEATPointers.stepCount);
                 outputRotation = network.GetOutputSignal(0);
                 outputAcceleration = network.GetOutputSignal(1);

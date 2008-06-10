@@ -56,7 +56,7 @@ namespace SharpNeatLib.Experiments
         {
             get
             {
-                return 9;
+                return 6;
             }
         }
 

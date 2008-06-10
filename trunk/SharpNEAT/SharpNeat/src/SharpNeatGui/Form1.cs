@@ -2674,7 +2674,7 @@ Do you wish to overwrite the file?";
 			
             // This object will get re-created every time the user switches 
             // options, so here's to garbage collection working.
-			bObjectHandle objectHandle = Activator.CreateInstanceFrom(selectedExperimentConfigInfo.AssemblyUrl, selectedExperimentConfigInfo.TypeName);
+			ObjectHandle objectHandle = Activator.CreateInstanceFrom(selectedExperimentConfigInfo.AssemblyUrl, selectedExperimentConfigInfo.TypeName);
 			selectedExperiment = (IExperiment)objectHandle.Unwrap();
 			selectedExperiment.LoadExperimentParameters(selectedExperimentConfigInfo.ParameterTable);
 

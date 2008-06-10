@@ -51,15 +51,13 @@ namespace SharpNeatLib.Experiments
            //EXECUTE NEAT NEURAL NETWORK
 
            rotationChange *= 0.95f;
-           network.SetInputSignal(0, trackPosition.X);
-           network.SetInputSignal(1, trackPosition.Y);
-           network.SetInputSignal(2, trackPosition.Z);
-           network.SetInputSignal(3, trackPosition.X);
-           network.SetInputSignal(4, trackPosition.Y);
-           network.SetInputSignal(5, trackPosition.Z);
-           network.SetInputSignal(6, carPos.X);
-           network.SetInputSignal(7, carPos.Y);
-           network.SetInputSignal(8, carPos.Z);
+           Vector3 positionDiff = carPos - trackPosition;
+           network.SetInputSignal(0, positionDiff.X);
+           network.SetInputSignal(1, positionDiff.Y);
+           network.SetInputSignal(2, positionDiff.Z);
+           network.SetInputSignal(3, trackDirection.X);
+           network.SetInputSignal(4, trackDirection.Y);
+           network.SetInputSignal(5, trackDirection.Z);
            network.MultipleSteps(NEATPointers.stepCount);
            rotationChange = network.GetOutputSignal(0);
            double testRotationRange = Math.Abs(1.0 *
