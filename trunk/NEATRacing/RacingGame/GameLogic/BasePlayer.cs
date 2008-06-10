@@ -82,7 +82,7 @@ namespace RacingGame.GameLogic
         /// </summary>
         protected void StartNewLap()
         {
-            lap++;
+            //lap++;
 
             RacingGameManager.Landscape.StartNewLap();
 

@@ -5,6 +5,7 @@ using SharpNeatLib.Evolution;
 using RacingGame.GameLogic;
 using Microsoft.Xna.Framework;
 using RacingGame.Tracks;
+using SharpNeat;
 
 namespace RacingGame
 {
@@ -16,6 +17,7 @@ namespace RacingGame
         public static int currentControlPoint = 0;
         public static Vector3 trackPos = new Vector3(0,0,0);
         public static Vector3 trackDir = new Vector3(0, 0, 0);
+        public static Form1 ui;
 
         public static TrackVertex getClosestTrackPoint()
         {

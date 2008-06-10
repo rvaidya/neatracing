@@ -2455,7 +2455,7 @@ Do you wish to overwrite the file?";
 
 		#region Search Buttons
 
-		private void btnSearchStart_Click(object sender, System.EventArgs e)
+		public void btnSearchStart_Click(object sender, System.EventArgs e)
 		{
 			searchState = SearchStateEnum.Running;
 			UpdateGuiState();

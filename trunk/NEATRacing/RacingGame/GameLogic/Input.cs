@@ -508,6 +508,7 @@ namespace RacingGame.GameLogic
             }
         }
 
+
         /// <summary>
         /// Keyboard F1 just pressed
         /// </summary>
@@ -531,6 +532,14 @@ namespace RacingGame.GameLogic
             {
                 return keyboardState.IsKeyDown(Keys.F2) &&
                     keysPressedLastFrame.Contains(Keys.F2) == false;
+            }
+        }
+        public static bool KeyboardF3JustPressed
+        {
+            get
+            {
+                return keyboardState.IsKeyDown(Keys.F3) &&
+                    keysPressedLastFrame.Contains(Keys.F3) == false;
             }
         }
 

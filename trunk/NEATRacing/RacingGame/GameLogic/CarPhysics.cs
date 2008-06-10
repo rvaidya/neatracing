@@ -521,6 +521,10 @@ namespace RacingGame.GameLogic
                     neuralNet = false;
                 }
             }
+            if (Input.KeyboardF3JustPressed == true)
+            {
+                RacingGamePointers.ui.btnSearchStart_Click(new object(), new EventArgs());
+            }
             if (genome != null && neuralNet)
             {
                 INetwork network = genome.Decode(NEATPointers.activationFunction);
@@ -528,9 +532,12 @@ namespace RacingGame.GameLogic
                 network.SetInputSignal(0, trackPoso.X);
                 network.SetInputSignal(1, trackPoso.Y);
                 network.SetInputSignal(2, trackPoso.Z);
-                network.SetInputSignal(3, carPos.X);
-                network.SetInputSignal(4, carPos.Y);
-                network.SetInputSignal(5, carPos.Z);
+                network.SetInputSignal(3, trackPoso.X);
+                network.SetInputSignal(4, trackPoso.Y);
+                network.SetInputSignal(5, trackPoso.Z);
+                network.SetInputSignal(6, carPos.X);
+                network.SetInputSignal(7, carPos.Y);
+                network.SetInputSignal(8, carPos.Z);
                 network.MultipleSteps(NEATPointers.stepCount);
                 outputRotation = network.GetOutputSignal(0);
                 outputAcceleration = network.GetOutputSignal(1);
