@@ -37,8 +37,8 @@ namespace RacingGame
 #endif
         static void Main()
         {
-            //Thread t = new Thread(NEATThread);
-            //t.Start();
+            Thread t = new Thread(NEATThread);
+            t.Start();
             StartGame();
         }
         static void NEATThread()
