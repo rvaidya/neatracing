@@ -8,14 +8,14 @@ using SharpNeatExperiments.RacingGame;
 
 namespace SharpNeatLib.Experiments
 {
-    public class RacingGameStandaloneExperiment : IExperiment
+    public class RGTrainingExperiment : IExperiment
     {
         IPopulationEvaluator populationEvaluator;
         IActivationFunction activationFunction = new SteepenedSigmoid();
 
         #region Constructor
 
-        public RacingGameStandaloneExperiment()
+        public RGTrainingExperiment()
         {
             NEATPointers.activationFunction = activationFunction;
             TextReader tfr = new StreamReader("data/2008.06.09 07.03.49.txt");
@@ -58,7 +58,7 @@ namespace SharpNeatLib.Experiments
 
         public void ResetEvaluator(IActivationFunction activationFn)
         {
-            populationEvaluator = new SingleFilePopulationEvaluator(new RacingGameNetworkEvaluator(), activationFn);
+            populationEvaluator = new SingleFilePopulationEvaluator(new RGTrainingNetworkEvaluator(), activationFn);
         }
 
         public int InputNeuronCount

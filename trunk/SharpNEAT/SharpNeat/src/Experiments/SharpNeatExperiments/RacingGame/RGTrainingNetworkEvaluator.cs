@@ -6,7 +6,7 @@ using SharpNeatExperiments.RacingGame;
 
 namespace SharpNeatLib.Experiments
 {
-    public class RacingGameStandaloneNetworkEvaluator : INetworkEvaluator
+    public class RGTrainingNetworkEvaluator : INetworkEvaluator
     {
 
         public string EvaluatorStateMessage
