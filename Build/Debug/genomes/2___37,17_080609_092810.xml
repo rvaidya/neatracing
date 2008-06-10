@@ -1,0 +1,20 @@
+<genome id="5298" species-id="3" age="1" fitness="37.17" activation-fn-id="SteepenedSigmoid">
+  <neurons>
+    <neuron id="0" type="bias" />
+    <neuron id="1" type="in" />
+    <neuron id="2" type="in" />
+    <neuron id="3" type="in" />
+    <neuron id="4" type="in" />
+    <neuron id="5" type="in" />
+    <neuron id="6" type="in" />
+    <neuron id="7" type="out" />
+    <neuron id="8" type="out" />
+    <neuron id="9" type="out" />
+  </neurons>
+  <connections>
+    <connection innov-id="10" src-id="0" tgt-id="7" weight="-1.3571346923708916" />
+    <connection innov-id="29" src-id="5" tgt-id="9" weight="0.40384550113230944" />
+    <connection innov-id="30" src-id="6" tgt-id="9" weight="0.14535810332745314" />
+    <connection innov-id="67" src-id="8" tgt-id="9" weight="4.28828074131161" />
+  </connections>
+</genome>
