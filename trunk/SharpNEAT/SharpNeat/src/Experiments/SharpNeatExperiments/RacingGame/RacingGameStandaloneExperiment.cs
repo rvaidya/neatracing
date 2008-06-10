@@ -18,7 +18,7 @@ namespace SharpNeatLib.Experiments
         public RacingGameStandaloneExperiment()
         {
             NEATPointers.activationFunction = activationFunction;
-            TextReader tfr = new StreamReader("val");
+            TextReader tfr = new StreamReader("data/2008.06.09 07.03.49.txt");
             String line = tfr.ReadLine();
             while (line != null)
             {
