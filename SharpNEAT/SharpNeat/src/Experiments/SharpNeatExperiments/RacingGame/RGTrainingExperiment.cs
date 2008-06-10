@@ -18,15 +18,6 @@ namespace SharpNeatLib.Experiments
         public RGTrainingExperiment()
         {
             NEATPointers.activationFunction = activationFunction;
-            TextReader tfr = new StreamReader("data/2008.06.09 07.03.49.txt");
-            String line = tfr.ReadLine();
-            while (line != null)
-            {
-                RacingGameStateObject o = new RacingGameStateObject();
-                o.parseString(line);
-                NEATPointers.states.Add(o);
-                line = tfr.ReadLine();
-            }
         }
 
         #endregion

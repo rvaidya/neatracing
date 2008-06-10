@@ -3,6 +3,9 @@ using SharpNeatLib.NeuralNetwork;
 using Microsoft.Xna.Framework;
 using RacingGame.Helpers;
 using SharpNeatExperiments.RacingGame;
+using System.Collections;
+using System.IO;
+using SharpNeatLib.Evolution;
 
 namespace SharpNeatLib.Experiments
 {
@@ -29,14 +32,32 @@ namespace SharpNeatLib.Experiments
             maxAccelerationPerSec = 2.5f * 0.85f,
             MeterPerSecToMph = 1.609344f * ((60.0f * 60.0f) / 1000.0f);
         Vector3 carPos, carDir, carUp, carForce, trackPosition, trackDirection;
+
+        public ArrayList getStates()
+        {
+            if (NEATPointers.states != null) return NEATPointers.states;
+            NEATPointers.states = new ArrayList();
+            TextReader tfr = new StreamReader("data/2008.06.09 07.03.49.txt");
+            String line = tfr.ReadLine();
+            while (line != null)
+            {
+                RacingGameStateObject o = new RacingGameStateObject();
+                bool success = o.parseString(line);
+                if(success) NEATPointers.states.Add(o);
+                line = tfr.ReadLine();
+            }
+            return NEATPointers.states;
+        }
+
         public double EvaluateNetwork(INetwork network)
         {
+            ArrayList states = getStates();
             double averageSpeed = 0.0;
-            for (int i = 0; i < NEATPointers.states.Count; i++)
+            for (int i = 0; i < states.Count; i++)
             {
-                averageSpeed += GetSpeed(network, (RacingGameStateObject) NEATPointers.states[i]);
+                averageSpeed += GetSpeed(network, (RacingGameStateObject) states[i]);
             }
-            averageSpeed /= NEATPointers.states.Count;
+            averageSpeed /= states.Count;
             return averageSpeed;
         }
         public double GetSpeed(INetwork network, RacingGameStateObject o)
@@ -94,13 +115,13 @@ namespace SharpNeatLib.Experiments
             double absoluteRotation = Math.Abs(rotationChange);
             if (absoluteRotation > testRotationRange)
             {
-                return 0;
+                return EvolutionAlgorithm.MIN_GENOME_FITNESS;
             }
             double newAccelerationForce = network.GetOutputSignal(1);
             double absoluteAcceleration = Math.Abs(newAccelerationForce);
             if (absoluteAcceleration > maxAccelerationPerSec)
             {
-                return 0;
+                return EvolutionAlgorithm.MIN_GENOME_FITNESS;
             }
             float slowdown = (float)network.GetOutputSignal(2);
             //END NEAT NEURAL NETWORK CODE
@@ -282,6 +303,7 @@ namespace SharpNeatLib.Experiments
             /*Vector3 diff = carPos - trackPosition;
             double len = diff.Length();
             return speedNEAT * dot * (1.0 / len);*/
+            if (speedNEAT == 0) return EvolutionAlgorithm.MIN_GENOME_FITNESS;
             return speedNEAT * MeterPerSecToMph;
         }
 
