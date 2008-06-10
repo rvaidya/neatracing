@@ -4,6 +4,8 @@ using System.Text;
 using SharpNeatLib.Evolution;
 using SharpNeatLib.NeuralNetwork;
 using Microsoft.Xna.Framework;
+using System.IO;
+using System.Collections;
 
 namespace SharpNeatLib
 {
@@ -12,6 +14,8 @@ namespace SharpNeatLib
         public const int inputCount = 8;
         public const int outputCount = 3;
         public const int stepCount = 1;
+        public static ArrayList states;
+
         /*
          * Parameters:
          * 0: speed
@@ -32,7 +36,7 @@ namespace SharpNeatLib
          * 2: carUp
          * 3: carForce
          * 4: trackPosition
-         * 5: trackVector
+         * 5: trackDirection
          */
         private static Vector3[] vectorParameters = new Vector3[6];
         public static int getVectorCount() { return vectorParameters.Length; }

@@ -989,6 +989,22 @@ namespace RacingGame.GameLogic
             vectors[5] = trackDirection;
             NEATPointers.setParameters(parameters);
             NEATPointers.setVectors(vectors);
+            double time = (DateTime.Now - new DateTime(1970, 1, 1)).TotalSeconds;
+            if (RacingGamePointers.tfw != null && (time - RacingGamePointers.savedTime >= 0.5))
+            {
+                String outString = speedNEAT + " " + rotationChange + " " + Acceleration + " " + moveFactor + " ";
+                outString += virtualRotationAmount + " " + rotateCarAfterCollision + " " + carMass + " ";
+                outString += maxSpeed + " ";                
+                outString += carPos.X + " " + carPos.Y + " " + carPos.Z + " ";
+                outString += carDir.X + " " + carDir.Y + " " + carDir.Z + " ";
+                outString += carUp.X + " " + carUp.Y + " " + carUp.Z + " ";
+                outString += carForce.X + " " + carForce.Y + " " + carForce.Z + " ";
+                outString += trackPos.X + " " + trackPos.Y + " " + trackPos.Z + " ";
+                outString += trackDirection.X + " " + trackDirection.Y + " " + trackDirection.Z + " ";
+                RacingGamePointers.tfw.WriteLine(outString);
+                RacingGamePointers.tfw.Flush();
+                RacingGamePointers.savedTime = time;
+            }
             #endregion
         }
         #endregion
