@@ -14,7 +14,8 @@ namespace SharpNeatLib
         public const int inputCount = 8;
         public const int outputCount = 3;
         public const int stepCount = 1;
-        public static ArrayList states;
+        public static ArrayList states = null;
+
 
         /*
          * Parameters:
