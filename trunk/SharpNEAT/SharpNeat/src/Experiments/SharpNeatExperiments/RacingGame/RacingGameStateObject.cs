@@ -11,11 +11,11 @@ namespace SharpNeatExperiments.RacingGame
         public double speed, rotationChange, acceleration, moveFactor, virtualRotationAmount, rotateCarAfterCollision;
         public double carMass, maxSpeed;
         public Vector3 carPos, carDir, carUp, carForce, trackPosition, trackDirection;
-        public bool parseString(String s)
+        public int parseString(String s)
         {
             int len = NEATPointers.getParameterCount() + NEATPointers.getVectorCount() * 3;
-            String[] split = s.Split(" ".ToCharArray());
-            if (split.Length != len) return false;
+            String[] split = s.Trim().Split(" ".ToCharArray());
+            if (split.Length != len) return split.Length;
             speed = Double.Parse(split[0]);
             rotationChange = Double.Parse(split[1]);
             acceleration = Double.Parse(split[2]);
@@ -30,7 +30,7 @@ namespace SharpNeatExperiments.RacingGame
             carForce = new Vector3(float.Parse(split[17]),float.Parse(split[18]),float.Parse(split[19]));
             trackPosition = new Vector3(float.Parse(split[20]),float.Parse(split[21]),float.Parse(split[22]));
             trackDirection = new Vector3(float.Parse(split[23]), float.Parse(split[24]), float.Parse(split[25]));
-            return true;
+            return -1;
         }
     }
 }

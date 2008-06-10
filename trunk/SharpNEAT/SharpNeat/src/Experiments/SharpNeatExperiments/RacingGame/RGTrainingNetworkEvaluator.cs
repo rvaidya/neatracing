@@ -38,12 +38,13 @@ namespace SharpNeatLib.Experiments
             if (NEATPointers.states != null) return NEATPointers.states;
             NEATPointers.states = new ArrayList();
             TextReader tfr = new StreamReader("data/2008.06.09 07.03.49.txt");
-            String line = tfr.ReadLine();
-            while (line != null)
+            String line;
+            while ((line = tfr.ReadLine()) != null)
             {
+                if (line == null) continue;
                 RacingGameStateObject o = new RacingGameStateObject();
-                bool success = o.parseString(line);
-                if(success) NEATPointers.states.Add(o);
+                int failure = o.parseString(line);
+                if(failure < 0) NEATPointers.states.Add(o);
                 line = tfr.ReadLine();
             }
             return NEATPointers.states;

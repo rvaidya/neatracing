@@ -1000,7 +1000,7 @@ namespace RacingGame.GameLogic
                 outString += carUp.X + " " + carUp.Y + " " + carUp.Z + " ";
                 outString += carForce.X + " " + carForce.Y + " " + carForce.Z + " ";
                 outString += trackPos.X + " " + trackPos.Y + " " + trackPos.Z + " ";
-                outString += trackDirection.X + " " + trackDirection.Y + " " + trackDirection.Z + " ";
+                outString += trackDirection.X + " " + trackDirection.Y + " " + trackDirection.Z;
                 RacingGamePointers.tfw.WriteLine(outString);
                 RacingGamePointers.tfw.Flush();
                 RacingGamePointers.savedTime = time;
