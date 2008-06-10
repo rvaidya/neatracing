@@ -43,7 +43,9 @@ namespace RacingGame
         }
         static void NEATThread()
         {
-            Application.Run(new Form1());
+            Form1 form = new Form1();
+            RacingGamePointers.ui = form;
+            Application.Run(form);
         }
         #endregion
 

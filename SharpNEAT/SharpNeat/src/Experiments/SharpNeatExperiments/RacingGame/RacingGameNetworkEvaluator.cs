@@ -25,7 +25,8 @@ namespace SharpNeatLib.Experiments
             MaxAirFriction = 0.66f * 200.0f,
             CarFrictionOnRoad = 17.523456789f,
             Gravity = 9.81f,
-            maxAccelerationPerSec = 2.5f * 0.85f;
+            maxAccelerationPerSec = 2.5f * 0.85f,
+            MeterPerSecToMph = 1.609344f * ((60.0f * 60.0f) / 1000.0f);
         Vector3 carPos, carDir, carUp, carForce, trackPosition, trackDirection;
        public double EvaluateNetwork(INetwork network)
         {
@@ -53,9 +54,12 @@ namespace SharpNeatLib.Experiments
            network.SetInputSignal(0, trackPosition.X);
            network.SetInputSignal(1, trackPosition.Y);
            network.SetInputSignal(2, trackPosition.Z);
-           network.SetInputSignal(3, carPos.X);
-           network.SetInputSignal(4, carPos.Y);
-           network.SetInputSignal(5, carPos.Z);
+           network.SetInputSignal(3, trackPosition.X);
+           network.SetInputSignal(4, trackPosition.Y);
+           network.SetInputSignal(5, trackPosition.Z);
+           network.SetInputSignal(6, carPos.X);
+           network.SetInputSignal(7, carPos.Y);
+           network.SetInputSignal(8, carPos.Z);
            network.MultipleSteps(NEATPointers.stepCount);
            rotationChange = network.GetOutputSignal(0);
            double testRotationRange = Math.Abs(1.0 *
@@ -248,7 +252,9 @@ namespace SharpNeatLib.Experiments
             float dot = Vector3.Dot(carDir, trackDirection);
             if (dot < 0) speedNEAT = -1 * speed;
             else speedNEAT = speed;
-            return speedNEAT;
+            Vector3 diff = carPos - trackPosition;
+            double len = diff.Length();
+            return speedNEAT * dot * (1.0/len);
         }
 
         /// <summary>
