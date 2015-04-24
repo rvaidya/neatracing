@@ -1,0 +1,1 @@
+An implementation of an evolving neural network using Kenneth Stanley's NEAT algorithm (implemented in the SharpNEAT library), used to drive cars in the Racing Game XNA demo.
